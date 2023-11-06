@@ -42,7 +42,7 @@
    * LTS schedule: https://nodejs.org/en/about/releases/
    * LTS versions: https://nodejs.org/en/download/releases/
    */
-  "nodeSupportedVersionRange": ">=12.13.0 <13.0.0 || >=14.15.0 <15.0.0 || >=16.13.0 <17.0.0 || <=18.17.1",
+  "nodeSupportedVersionRange": ">=12.13.0 <13.0.0 || >=14.15.0 <15.0.0 || >=16.13.0 <17.0.0 || <=18.17.1 || <=20.9.0",
 
   /**
    * Odd-numbered major versions of Node.js are experimental.  Even-numbered releases
@@ -426,8 +426,12 @@
     //     "projectFolder": "packages/api"
     //   },
       {
-        "packageName": "frontend-react",
-        "projectFolder": "packages/frontend-react"
+        "packageName": "gour.frontend",
+        "projectFolder": "packages/frontend"
+      },
+      {
+        "packageName": "gour.api",
+        "projectFolder": "packages/api"
       }
   ]
 }
