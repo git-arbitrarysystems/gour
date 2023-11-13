@@ -49,7 +49,7 @@ const Item = props => {
     return <Box sx={{
         flexGrow: 1,
         aspectRatio: 1,
-        bgcolor: type == 1 ? config.colors.board.double : type == 0 ? config.colors.board.single : 'transparent',
+        bgcolor: type === 1 ? config.colors.board.double : type === 0 ? config.colors.board.single : 'transparent',
         position: 'relative'
     }} >
         <ChipStack player={player} count={count} maxChipCount={maxChipCount} />

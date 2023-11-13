@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CssBaseline, Container, Button, Box, FormControlLabel, Checkbox, useTheme } from '@mui/material'
+import { CssBaseline, Container, Button, Box, FormControlLabel, Checkbox } from '@mui/material'
 import Board, { Chip } from './components/Board';
 
 
@@ -68,7 +68,7 @@ const App = () => {
     }
     return () => clearTimeout(timeout)
 
-  }, [state, auto])
+  }, [state, auto, _create, _next])
 
 
 
@@ -81,7 +81,7 @@ const App = () => {
       <Box>
         <Board 
           state={state?.board} 
-          moves={state?.action?.type == 'MOVE' ? state.action.options : null}
+          moves={state?.action?.type === 'MOVE' ? state.action.options : null}
           maxChipCount={state?.chipCount}
           />
       </Box>
