@@ -104,14 +104,7 @@ class GameOfUr:
                 0 if chips_on_tile else None,
                 chips_on_tile
             ]
-        
-        for index, chips_on_tile in enumerate(bottom):
-            bottom[index] = [
-                TileTypeList.index( TileType.START if index == 4 else TileType.END if index == 5 else TileType.DOUBLE if index == 0 or index == 6 else TileType.NORMAL),
-                1 if chips_on_tile else None,
-                chips_on_tile
-            ]
-        
+
         for index, chips_on_tile in enumerate(middle):
             player_on_tile = 0 if chips_on_tile else 1 if middle_enemy[index] else None
             middle[index] = [
@@ -119,20 +112,48 @@ class GameOfUr:
                 player_on_tile,
                 1 if player_on_tile != None else 0
             ]
+        
+        for index, chips_on_tile in enumerate(bottom):
+            bottom[index] = [
+                TileTypeList.index( TileType.START if index == 4 else TileType.END if index == 5 else TileType.DOUBLE if index == 0 or index == 6 else TileType.NORMAL),
+                1 if chips_on_tile else None,
+                chips_on_tile
+            ]
 
-        return [top,middle,bottom]
+        grid = [top,middle,bottom]
+
+        return grid 
     
     # Collect data to return from API
     def to_dict(self):
         return dict(
-            board=self.get_board_as_tiles(),
             action=self.negotiate_next_action(),
+            board=self.get_board_as_tiles(),
             player=self.player,
             dice=self.dice,
             winner=self.get_winner(),
-            tiles=TileTypeList,
             chipCount=self.coins_per_player
         )
+    
+    def index_to_coordinates(self, index):
+        player = [*range(4,-1,-1), *range(15,12,-1)]
+        shared = [*range(5,13,1)]
+        if index in player:
+            y = self.player * 2
+            x = player.index(index)
+        elif index in shared:
+            y = 1
+            x = shared.index(index)
+        return [x,y]
+    
+    def coordinates_to_index(self, coords):
+        [x,y] = coords
+        if y == 1:
+            index = 5 + x
+        else:
+            index = [*range(4,-1,-1), *range(15,12,-1)][x]
+        return index
+
 
     # Rolling the dice
     def roll(self):
@@ -147,10 +168,13 @@ class GameOfUr:
    
 
     # Get available moves
-    def update_available_moves(self):
-
+    def get_available_moves(self):
+        
+        if self.dice == None:
+            return []
+        
         steps = self.roll_sum()
-        self.available_moves = []
+        available_moves = []
 
         if steps > 0:
             board = self.get_board()
@@ -161,7 +185,11 @@ class GameOfUr:
                     if to_tile < len(board): # to_tile is not outside board
                         if not (board[to_tile] and to_tile < 15): # my chip is not already there, except if it's the last tile
                             if not (enemyboard[to_tile] and self.get_tile_is_double(to_tile) and self.get_tile_in_shared_area(to_tile) ): # i cannot take an enemy from a protected tile
-                                self.available_moves.append([from_tile, to_tile])
+                                available_moves.append([
+                                    self.index_to_coordinates(from_tile),
+                                    self.index_to_coordinates(to_tile)
+                                ])
+        return available_moves
 
     # Execute a move
     def move(self, _from: int, _to: int):
@@ -245,7 +273,7 @@ class GameOfUr:
             self.roll()
             self.trace('\tvalue:', self.roll_sum(), self.dice)
 
-            self.update_available_moves()
+            self.available_moves = self.get_available_moves()
             self.trace('\tmoves:', self.available_moves)
         #
         #
@@ -257,15 +285,19 @@ class GameOfUr:
             self.dice = None
 
             if action.value:
-                [_from, _to] = action.value
-                self.move(_from, _to)
+                [from_tile, to_tile] = action.value
+                [from_tile_index, to_tile_index] = [
+                    self.coordinates_to_index(from_tile),
+                    self.coordinates_to_index(to_tile)
+                ]
+                self.move( from_tile_index, to_tile_index )
 
                 self.trace('\tplayer', self.player, 'moved', action.value)
                 self.trace('\tboard:', self.boards)
 
                 
                 if self.get_winner() == None:
-                    if not self.get_tile_is_double(_to):
+                    if not self.get_tile_is_double(to_tile_index):
                         self.goto_next_player()
                         self.trace('\tselected next player', self.player)
                     else:
@@ -297,17 +329,19 @@ class GameOfUr:
 # Test drive
 #
 if __name__ == "__main__":
-    game = GameOfUr(debug=False, coins_per_player=7)
+    game = GameOfUr(debug=False, coins_per_player=7, player=0)
     print( '', *game.get_board_as_tiles(), sep='\n' )
+
     
-    for i in range(1000):
+    
+    for i in range(100):
         outboundAction = game.negotiate_next_action()
         if outboundAction.type != ActionType.UNKNOWN_ACTION:
             inboundAction = game.choose(outboundAction, choice='LAST')
             game.exec(inboundAction)
 
-            if outboundAction.type == ActionType.MOVE:
-                print( '', *game.get_board_as_tiles(), sep='\n' )
+            #if outboundAction.type == ActionType.MOVE:
+            print( '', *game.get_board_as_tiles(), sep='\n' )
                 #print(vars(game))
             if game.get_winner() != None:
                 print('\nGame won by player', game.get_winner(), 'in',i,'steps.')

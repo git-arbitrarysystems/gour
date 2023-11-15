@@ -1,6 +1,8 @@
+import './App.css'
 import { useCallback, useEffect, useState } from 'react'
 import { CssBaseline, Container, Button, Box, FormControlLabel, Checkbox } from '@mui/material'
 import Board, { Chip } from './components/Board';
+import Tetrahedron from './components/Tetrahedron';
 
 
 
@@ -75,6 +77,8 @@ const App = () => {
   return (<>
     <CssBaseline />
     <Container sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 5 }}>
+
+      <Tetrahedron />
       {/* <Box>
       <Button variant='contained' disabled={!!state} onClick={start}>start</Button>
       </Box> */}
@@ -83,6 +87,7 @@ const App = () => {
           state={state?.board} 
           moves={state?.action?.type === 'MOVE' ? state.action.options : null}
           maxChipCount={state?.chipCount}
+          onClickTile={(move) => _next('MOVE', move )}
           />
       </Box>
       <Box>
