@@ -3,24 +3,30 @@ lockfileVersion: 5.3
 specifiers:
   '@babel/plugin-proposal-private-property-in-object': ~7.21.11
   '@emotion/react': ~11.11.1
+  '@emotion/styled': ~11.11.0
   '@mui/material': ~5.14.17
   '@rush-temp/gour.api': file:./projects/gour.api.tgz
   '@rush-temp/gour.frontend': file:./projects/gour.frontend.tgz
+  '@rush-temp/gour.three': file:./projects/gour.three.tgz
   http-proxy-middleware: ~2.0.6
   react: ^18.2.0
   react-dom: ^18.2.0
   react-scripts: 5.0.1
+  three: ~0.158.0
 
 dependencies:
   '@babel/plugin-proposal-private-property-in-object': 7.21.11
   '@emotion/react': 11.11.1_react@18.2.0
-  '@mui/material': 5.14.17_6cb38a997c3ede4795254f57c0903c66
+  '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
+  '@mui/material': 5.14.17_aa3274991927adc2766d9259998fdd18
   '@rush-temp/gour.api': file:projects/gour.api.tgz
   '@rush-temp/gour.frontend': file:projects/gour.frontend.tgz
+  '@rush-temp/gour.three': file:projects/gour.three.tgz
   http-proxy-middleware: 2.0.6
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-scripts: 5.0.1_react@18.2.0
+  three: 0.158.0
 
 packages:
 
@@ -2194,40 +2200,6 @@ packages:
     resolution: {integrity: sha512-eE0uxrpJAEL2ZXkeGLKg8HQDafsiXY+6eNpP4lcv3yIjFfGbU6Hj9/P7Adt8jpU+6JIhmxvILGj2r27pX+zdrQ==}
     dev: false
 
-  /@mui/material/5.14.17_6cb38a997c3ede4795254f57c0903c66:
-    resolution: {integrity: sha512-+y0VeOLWfEA4Z98We/UH6KCo8+f2HLZDK45FY+sJf8kSojLy3VntadKtC/u0itqnXXb1Pr4wKB2tSIBW02zY4Q==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      '@emotion/react': ^11.5.0
-      '@emotion/styled': ^11.3.0
-      '@types/react': ^17.0.0 || ^18.0.0
-      react: ^17.0.0 || ^18.0.0
-      react-dom: ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@emotion/react':
-        optional: true
-      '@emotion/styled':
-        optional: true
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.23.2
-      '@emotion/react': 11.11.1_react@18.2.0
-      '@mui/base': 5.0.0-beta.23_react-dom@18.2.0+react@18.2.0
-      '@mui/core-downloads-tracker': 5.14.17
-      '@mui/system': 5.14.17_bbbb3f1791c074daa4d64e8574bad1c1
-      '@mui/types': 7.2.8
-      '@mui/utils': 5.14.17_react@18.2.0
-      '@types/react-transition-group': 4.4.9
-      clsx: 2.0.0
-      csstype: 3.1.2
-      prop-types: 15.8.1
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-is: 18.2.0
-      react-transition-group: 4.4.5_react-dom@18.2.0+react@18.2.0
-    dev: false
-
   /@mui/material/5.14.17_aa3274991927adc2766d9259998fdd18:
     resolution: {integrity: sha512-+y0VeOLWfEA4Z98We/UH6KCo8+f2HLZDK45FY+sJf8kSojLy3VntadKtC/u0itqnXXb1Pr4wKB2tSIBW02zY4Q==}
     engines: {node: '>=12.0.0'}
@@ -2279,27 +2251,6 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@mui/styled-engine/5.14.17_bbbb3f1791c074daa4d64e8574bad1c1:
-    resolution: {integrity: sha512-AqpVjBEA7wnBvKPW168bNlqB6EN7HxTjLOY7oi275AzD/b1C7V0wqELy6NWoJb2yya5sRf7ENf4iNi3+T5cOgw==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      '@emotion/react': ^11.4.1
-      '@emotion/styled': ^11.3.0
-      react: ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@emotion/react':
-        optional: true
-      '@emotion/styled':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.23.2
-      '@emotion/cache': 11.11.0
-      '@emotion/react': 11.11.1_react@18.2.0
-      csstype: 3.1.2
-      prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
-
   /@mui/styled-engine/5.14.17_ed0154863b5b2972f01b9f86c5340420:
     resolution: {integrity: sha512-AqpVjBEA7wnBvKPW168bNlqB6EN7HxTjLOY7oi275AzD/b1C7V0wqELy6NWoJb2yya5sRf7ENf4iNi3+T5cOgw==}
     engines: {node: '>=12.0.0'}
@@ -2317,34 +2268,6 @@ packages:
       '@emotion/cache': 11.11.0
       '@emotion/react': 11.11.1_react@18.2.0
       '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
-      csstype: 3.1.2
-      prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
-
-  /@mui/system/5.14.17_bbbb3f1791c074daa4d64e8574bad1c1:
-    resolution: {integrity: sha512-Ccz3XlbCqka6DnbHfpL3o3TfOeWQPR+ewvNAgm8gnS9M0yVMmzzmY6z0w/C1eebb+7ZP7IoLUj9vojg/GBaTPg==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      '@emotion/react': ^11.5.0
-      '@emotion/styled': ^11.3.0
-      '@types/react': ^17.0.0 || ^18.0.0
-      react: ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@emotion/react':
-        optional: true
-      '@emotion/styled':
-        optional: true
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.23.2
-      '@emotion/react': 11.11.1_react@18.2.0
-      '@mui/private-theming': 5.14.17_react@18.2.0
-      '@mui/styled-engine': 5.14.17_bbbb3f1791c074daa4d64e8574bad1c1
-      '@mui/types': 7.2.8
-      '@mui/utils': 5.14.17_react@18.2.0
-      clsx: 2.0.0
       csstype: 3.1.2
       prop-types: 15.8.1
       react: 18.2.0
@@ -9831,6 +9754,10 @@ packages:
       any-promise: 1.3.0
     dev: false
 
+  /three/0.158.0:
+    resolution: {integrity: sha512-TALj4EOpdDPF1henk2Q+s17K61uEAAWQ7TJB68nr7FKxqwyDr3msOt5IWdbGm4TaWKjrtWS8DJJWe9JnvsWOhQ==}
+    dev: false
+
   /throat/6.0.2:
     resolution: {integrity: sha512-WKexMoJj3vEuK0yFEapj8y64V0A6xcuPuK9Gt1d0R+dzCSJc0lHqQytAbSB4cDAK0dWh4T0E2ETkoLE2WZ41OQ==}
     dev: false
@@ -10709,7 +10636,7 @@ packages:
     dev: false
 
   file:projects/gour.frontend.tgz:
-    resolution: {integrity: sha512-olClMRwWscrks8XldsMrNzXBL4OiMZQUfzQQrgnNyjqf5uNO3tsz7T54v+bD/DIjCNjb8mUbBRQhBBo3XBn5YQ==, tarball: file:projects/gour.frontend.tgz}
+    resolution: {integrity: sha512-3LQZe9JF3nhMs8sibyaAr34Za4oG8Wi+XM1hRc7iMPbxWKOclsgjpcrJiexncDoma+oGvQfBdWBC/og8AEd4mQ==, tarball: file:projects/gour.frontend.tgz}
     name: '@rush-temp/gour.frontend'
     version: 0.0.0
     dependencies:
@@ -10721,6 +10648,57 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-scripts: 5.0.1_react@18.2.0
+      three: 0.158.0
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/plugin-syntax-flow'
+      - '@babel/plugin-transform-react-jsx'
+      - '@parcel/css'
+      - '@swc/core'
+      - '@types/babel__core'
+      - '@types/express'
+      - '@types/react'
+      - '@types/webpack'
+      - bufferutil
+      - canvas
+      - clean-css
+      - csso
+      - debug
+      - esbuild
+      - fibers
+      - node-notifier
+      - node-sass
+      - rework
+      - rework-visit
+      - sass
+      - sass-embedded
+      - sockjs-client
+      - supports-color
+      - ts-node
+      - type-fest
+      - typescript
+      - uglify-js
+      - utf-8-validate
+      - vue-template-compiler
+      - webpack-cli
+      - webpack-hot-middleware
+      - webpack-plugin-serve
+    dev: false
+
+  file:projects/gour.three.tgz:
+    resolution: {integrity: sha512-58eOG/sVMV6ihjQirvAdrXRn4ak8OouZa982OuMN7RgzheRm0m4FQoAsl3FTN1+/ywUANpX47Ng2VjD/m8JTzQ==, tarball: file:projects/gour.three.tgz}
+    name: '@rush-temp/gour.three'
+    version: 0.0.0
+    dependencies:
+      '@babel/plugin-proposal-private-property-in-object': 7.21.11
+      '@emotion/react': 11.11.1_react@18.2.0
+      '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
+      '@mui/material': 5.14.17_aa3274991927adc2766d9259998fdd18
+      http-proxy-middleware: 2.0.6
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-scripts: 5.0.1_react@18.2.0
+      three: 0.158.0
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/plugin-syntax-flow'

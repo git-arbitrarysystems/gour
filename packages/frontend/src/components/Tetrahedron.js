@@ -1,126 +1,210 @@
-import { Box } from '@mui/material'
+import * as THREE from 'three';
 
-import { useState } from 'react';
-
+import { useEffect, useRef, useState } from "react";
+import { Box } from '@mui/material';
 
 const Tetrahedron = props => {
 
-    const [rotation, setRotation] = useState([30, 250, 0])
-    const rr = () => {
-        setRotation(p => {
-            //var i = Math.random() * 100
-            const n = Math.random() < 0.5 ? 40 : 0//Math.floor( Math.random() * 40 )
-            return [80-n ,-60+n,160-n]
-            return p.map((v,i) => {
-                return i > 0 ? v + 10*i : v 
-            })
-        })
+    const ref = useRef(null);
+
+    const getTexture = (options = {}) => {
+
+        /** Common CanvasTexture Renderer */
+        options = {
+            ...({
+                type: 'dicetexture',
+                width: 200,
+                height: 200,
+                tipSize: 50,
+                tipColor: 'red',
+                appendPreviewCanvas: true
+            }), ...options
+        }
+
+        const id = JSON.stringify(options)
+        let canvas = document.getElementById(id)
+        if (canvas) return canvas;
+
+        if (options.appendPreviewCanvas) {
+            canvas = document.createElement("canvas")
+            canvas.id = id
+            document.body.appendChild(canvas)
+        } else {
+            canvas = new OffscreenCanvas(options.width, options.height)
+            canvas.id = id
+        }
+
+        console.log(canvas)
+
+        /** Specific implementations */
+        const { width: w, height: h, tipSize, drawLeftTip, drawRightTip, drawTopTip, tipColor } = options
+        canvas.width = w
+        canvas.height = h
+
+        const ctx = canvas.getContext('2d')
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, w, h)
+
+
+        ctx.fillStyle = 'red'
+        if (drawTopTip) ctx.fillRect(0, 0, w, tipSize)
+
+        if (drawLeftTip) {
+            ctx.beginPath()
+            ctx.moveTo(0, h)
+            ctx.lineTo(tipSize, h)
+            ctx.lineTo(0, h - tipSize)
+            ctx.closePath()
+            ctx.fill()
+        }
+        if (drawRightTip) {
+            ctx.beginPath()
+            ctx.moveTo(w, h)
+            ctx.lineTo(w - tipSize, h)
+            ctx.lineTo(w, h - tipSize)
+            ctx.closePath()
+            ctx.fill()
+        }
+
+
+        return canvas
+
     }
 
-    /**
-     * roll 1
-     * [20,rand,0]
-     * [80,-60,160] 
-     * 40,-20,120
-     * */
 
-    const w = 300,
-        h = Math.cos(Math.PI / 6) * w,
-        pa = 90 - (Math.acos(1 / 3) / Math.PI) * 180,
-        pyramidHeight = Math.sqrt(2 / 3) * w;
+    useEffect(() => {
 
+        const width = 200
+        const height = 200;
 
-    return <Box sx={{ m: 10, width: w, height: w, background: '#fff2' }} onClick={rr}>
+        /** Create renderer */
+        const renderer = new THREE.WebGLRenderer({ alpha: false });
+        renderer.setSize(width, height);
 
-        <Box sx={{
-            width: w,
-            height: w,
-            transformOrigin: `${w * 0.5}px ${h * 0.5}px ${-pyramidHeight * 0.5}px`,
-            transition: 'transform 0.5s',
-            transform: `rotateX(${rotation[0]}deg) rotateY(${rotation[1]}deg) rotateZ(${rotation[2]}deg)`,
-            transformStyle: 'preserve-3d',
-            position: 'relative',
-        }}>
-            {Array(4).fill().map((n, i) => {
-                return <Box key={`s${i}`} sx={{
-                    width: w,
-                    height: h,
-                    position: 'absolute',
-                    backfaceVisibility: 'hidden',
-                    transformOrigin: ['bottom', 'bottom left', 'bottom right', 'bottom'][i],
-                    transform: ['rotateX(90deg)', `rotateY(60deg) rotateX(${-pa}deg)`, `rotateY(-60deg) rotateX(${-pa}deg)`, `rotateX(${pa}deg) rotateY(180deg)`][i],
-                    //display: i!=2 ? 'none' : undefined
-                }}>
-                    <svg viewBox={`0 0 ${w} ${h}`} width={`${w}px`} height={`${h}px`}
-                    >
-                        <mask id="shape">
+        /** Empty the dom-container */
+        while (ref.current?.firstChild) ref.current.removeChild(ref.current.firstChild)
+        ref.current && ref.current.appendChild(renderer.domElement);
 
-                            <polygon
-                                points={`0,${h} ${w},${h} ${0.5 * w},0`}
-                                fill='white'
-                            />
-                        </mask>
-                       
-                        <rect x="0" y="0" width={w} height={h} fill={`rgba(${['255,0,0', '0,255,0', '0,0,255', '255,0,255'][i]},1)`} mask='url(#shape)' />
-                        { i !== 0 && <rect x={0} y={0} width={w} height={h * 0.25} fill='green' mask="url(#shape)" /> }
-                        {
-                            i == 0 &&  <polygon
-                                points={`0,${h} ${h*0.25},${h} 0,${h - Math.sin(Math.PI/3)*h*0.5}`}
-                             fill='green' mask="url(#shape)" />
-                        }
-                        {
-                            i == 1 &&  <polygon
-                                points={`0,${h} ${h*0.25},${h} 0,${h - Math.sin(Math.PI/3)*h*0.5}`}
-                             fill='green' mask="url(#shape)" />
-                        }
-                        {
-                            i == 3 &&  <polygon
-                                points={`${w},${h} ${w-h*0.25},${h} ${w},${h - Math.sin(Math.PI/3)*h*0.5}`}
-                             fill='green' mask="url(#shape)" />
-                        }
-                    </svg>
-                </Box>
+        /** Scenes and cameras */
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, -1, 1, -1, 1)
+        scene.add(camera)
 
-            })}
-        </Box>
+        /** */
+        const group = new THREE.Group()
+        scene.add(group)
 
-    </Box>
+        /** Construct Tetrahedron */
+        var geometry = new THREE.TetrahedronGeometry(1);
+
+        /** Make it sit on the plane */
+        geometry.applyMatrix4(
+            new THREE.Matrix4().makeRotationAxis(
+                new THREE.Vector3(1, 0, 1).normalize(),
+                Math.atan(Math.sqrt(2))
+            )
+        );
+        geometry.translate(0, 1 / 3, 0);
 
 
+        geometry.addGroup(0, 3, 0);
+        geometry.addGroup(3, 3, 1);
+        geometry.addGroup(6, 3, 2);
+        geometry.addGroup(9, 3, 3);
+        geometry.setAttribute("uv", new THREE.Float32BufferAttribute([ // UVs, 
+            //numbers here are to describe uv coordinate, so they are actually customizable
+            // if you want to customize it, you have to check the vertices position array first. 
+            0, 0,
+            1, 0,
+            0.5, 1,
+            //
+            1, 0,
+            0.5, 1,
+            0, 0,
+            //
+            1, 0,
+            0.5, 1,
+            0, 0,
+            //
+            0, 0,
+            1, 0,
+            0.5, 1
+        ], 2));
+       
 
-    /**
-     * 
-     * What is the internal angle between the two faces of a regular ...
-The internal angle between the two faces of a regular tetrahedron is approximately 70.53 degrees.
-     */
+        /** Add a debug material */
+        const wireframe = new THREE.LineSegments(
+            new THREE.EdgesGeometry(geometry),
+            new THREE.LineBasicMaterial({
+                color: 0x00ff00,
+                linewidth: 1
+            })
+        )
 
-    //     return <div style={{perspective: 1000, zIndex:100}}>
-    //     <div id="tetrahedron">
-    //         <div class="bottom">
-    //             <svg height="87px" width="100px">
-    //                 <polygon points="0,87 100,87 50,0" style={{fill:'#000'}} />
-    //             </svg>
-    //         </div>
-    //         <div class="left">
-    //             <svg height="87px" width="100px">
-    //                 <polygon points="0,87 100,87 50,0" style={{fill:'#000'}} />
-    //                 <polygon points="38.5,20 62,20 50,0" style={{fill:'#fff'}} />
-    //             </svg>
-    //         </div>
-    //         <div class="right">
-    //             <svg height="87px" width="100px">
-    //                 <polygon points="0,87 100,87 50,0" style={{fill:'#000'}} />
-    //                 <polygon points="38.5,20 62,20 50,0" style={{fill:'#fff'}} />
-    //             </svg>
-    //         </div>
-    //         <div class="back">
-    //             <svg height="87px" width="100px">
-    //                 <polygon points="0,87 100,87 50,0" sstyle={{fill:'#000'}} />
-    //                 <polygon points="38.5,20 62,20 50,0" style={{fill:'#fff'}} />
-    //             </svg>
-    //         </div>
-    //     </div>
-    // </div>
+
+       
+
+        const shape = new THREE.Mesh(
+            geometry,
+            Array(4).fill().map((n, i) => new THREE.MeshBasicMaterial({
+                map: new THREE.CanvasTexture(
+                    getTexture({ drawTopTip: true, drawLeftTip: i === 1, drawRightTip: i === 0 })
+                ),
+                side: THREE.DoubleSide,
+                //transparent: true, opacity: 0.8
+            })
+            )
+        )
+
+
+
+        var light1 = new THREE.PointLight(0xffffff, 1, 0);
+        light1.position.set(-1, 5, -7);
+        scene.add(light1);
+
+
+
+
+
+
+        group.add(shape)
+        group.add(wireframe)
+
+
+
+        window.setTargetRotation = ([x, y, z]) => {
+            group.targetRotation = [x * Math.PI, y * Math.PI, z * Math.PI]
+        }
+
+        window.geometry = geometry
+
+        // 0: [0.1,0,0.25]
+        // 1: [0.6,0.75,0] // var o = 0.1; setTargetRotation([0.6,0.75+o,0+-o]) (o>0)
+
+        var animate = function () {
+            requestAnimationFrame(animate);
+            if (group.targetRotation) {
+                const speed = 0.1
+                const [tx, ty, tz] = group.targetRotation
+                const [x, y, z] = group.rotation;
+                group.rotation.x = x <= tx - speed ? group.rotation.x + speed : x >= tx + speed ? group.rotation.x - speed : tx;
+                group.rotation.y = y <= ty - speed ? group.rotation.y + speed : y >= ty + speed ? group.rotation.y - speed : ty;
+                group.rotation.z = z <= tz - speed ? group.rotation.z + speed : z >= tz + speed ? group.rotation.z - speed : tz;
+            }
+
+            renderer.render(scene, camera);
+        };
+        animate();
+    }, []);
+
+
+
+
+
+    return (
+        <Box sx={{}} ref={ref}></Box>
+
+    );
 }
 
 export default Tetrahedron

@@ -432,6 +432,10 @@
       {
         "packageName": "gour.api",
         "projectFolder": "packages/api"
+      },
+      {
+        "packageName": "gour.three",
+        "projectFolder": "packages/three"
       }
   ]
 }
