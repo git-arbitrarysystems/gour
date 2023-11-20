@@ -1,6 +1,63 @@
 import * as THREE from 'three'
 import * as  TWEEN from '@tweenjs/tween.js';
-import { ConvexGeometry } from 'three/addons/geometries/ConvexGeometry.js';
+
+
+class DiceGroup extends THREE.Mesh {
+    constructor(size = 6) {
+
+        let tileWidth,
+        tileHeight,
+        tileDepth;
+
+        const array = Array(4).fill().map((n,index) => {
+            const dice = new Dice(size);
+            if (!tileWidth) {
+                dice.geometry.computeBoundingBox()
+                tileWidth = dice.geometry.boundingBox.max.x - dice.geometry.boundingBox.min.x;
+                tileHeight = dice.geometry.boundingBox.max.y - dice.geometry.boundingBox.min.y;
+                tileDepth = dice.geometry.boundingBox.max.z - dice.geometry.boundingBox.min.z;
+            }
+            const y = Math.floor(index / 2),
+                x = index % 2 + (y%2) * 0.5
+
+            dice.position.set(x * tileWidth, size / 3, y * tileWidth)
+            return dice
+        })
+        const boxHeight = 0;
+        const geometry = new THREE.BoxGeometry(
+            tileWidth*2.5,
+            boxHeight, 
+            tileWidth+tileDepth
+        )
+        geometry.translate(
+            tileWidth*0.75,
+            0.01 + boxHeight*0.5,
+            tileDepth * 0.5
+        )
+        
+        super(
+            geometry,
+            new THREE.MeshBasicMaterial({ 
+                wireframe:true,
+                //visible:false
+            })
+        )
+
+        array.forEach(dice => this.add(dice))
+        this.array = array;
+    }
+
+    roll(values = [], duration){
+        this.array.forEach( (dice,i) => {
+            dice.roll(
+                values[i] || Math.round(Math.random()),
+                typeof duration === 'number' ? duration : 600 + Math.round( Math.random() * 200 ),
+                3 + Math.random() * 2
+            )
+        })
+        
+    }
+}
 
 
 class Dice extends THREE.Mesh {
@@ -53,8 +110,7 @@ class Dice extends THREE.Mesh {
                 map: Dice.renderCanvasTexture({
                     drawTopTip: true,
                     drawLeftTip: i === 1,
-                    drawRightTip: i === 0,
-                    fillColor: ['#f00', '#0f0', '#00f', '#f0f'][i]
+                    drawRightTip: i === 0
                 }),
                 //side: THREE.DoubleSide,
                 //transparent: true, opacity: 0.8
@@ -71,16 +127,16 @@ class Dice extends THREE.Mesh {
 
     }
 
-    
 
 
-    roll(value = 0) {
 
-        const duration = 1000
+    roll(value = 0, duration = 1000, height = 3) {
+
+
 
         /** Store current rotation */
-        var rotationFrom =[this.rotation.x,this.rotation.y,this.rotation.z],
-        rotationTo=[0,0,0]
+        var rotationFrom = [this.rotation.x, this.rotation.y, this.rotation.z],
+            rotationTo = [0, 0, 0]
 
         /** Calculate `to` properties */
         const temp = new THREE.Object3D()
@@ -90,25 +146,25 @@ class Dice extends THREE.Mesh {
         }
         temp.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), Math.PI * (Math.random()))
 
-        rotationTo = temp.rotation.toArray().slice(0,3)
+        rotationTo = temp.rotation.toArray().slice(0, 3)
 
-        rotationTo[0] += (Math.PI * 2) * (Math.floor( Math.random() * 3) - 1)
-        rotationTo[1] += (Math.PI * 2) * (Math.floor( Math.random() * 3) - 1)
-        rotationTo[2] += (Math.PI * 2) * (Math.floor( Math.random() * 3) - 1)
+        rotationTo[0] += (Math.PI * 2) * (Math.floor(Math.random() * 3) - 1)
+        rotationTo[1] += (Math.PI * 2) * (Math.floor(Math.random() * 3) - 1)
+        rotationTo[2] += (Math.PI * 2) * (Math.floor(Math.random() * 3) - 1)
 
         /** Create roll tween instance */
         const updateRotation = ([x, y, z]) => this.rotation.set(x, y, z)
-        const rotation = new TWEEN.Tween(rotationFrom).to(rotationTo, duration).easing(TWEEN.Easing.Sinusoidal.Out).onUpdate(updateRotation);
+        const rotation = new TWEEN.Tween(rotationFrom).to(rotationTo, duration).easing(TWEEN.Easing.Quadratic.Out).onUpdate(updateRotation);
         rotation.start()
 
         /** Jump animation*/
-        const floor = this.size/3, high = this.size * 3;
-        const updateTranslation = ({y}) => this.position.set(this.position.x, y, this.position.z);
+        const floor = this.size / 3, high = this.size * height;
+        const updateTranslation = ({ y }) => this.position.set(this.position.x, y, this.position.z);
 
-        const translationUp = new TWEEN.Tween({y:floor}).to({y:high}, duration*0.5).easing(TWEEN.Easing.Cubic.Out).onUpdate(updateTranslation)
-        const translationDown = new TWEEN.Tween({y:high}).to({y:floor}, duration*0.5).easing(TWEEN.Easing.Cubic.In).onUpdate(updateTranslation)
+        const translationUp = new TWEEN.Tween({ y: floor }).to({ y: high }, duration * 0.5).easing(TWEEN.Easing.Cubic.Out).onUpdate(updateTranslation)
+        const translationDown = new TWEEN.Tween({ y: high }).to({ y: floor }, duration * 0.5).easing(TWEEN.Easing.Quartic.In).onUpdate(updateTranslation)
         translationUp.chain(translationDown).start()
-        
+
 
 
     }
@@ -122,7 +178,7 @@ Dice.renderCanvasTexture = function (options = {}) {
             height: 200,
             tipSize: 50,
             tipColor: '#ffffff',
-            fillColor: '#666666'
+            fillColor: '#111111'
         }), ...options
     }
 
@@ -168,4 +224,4 @@ Dice.renderCanvasTexture = function (options = {}) {
 
 
 
-export { Dice as default }
+export { Dice, DiceGroup }

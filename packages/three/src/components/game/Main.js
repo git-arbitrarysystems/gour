@@ -1,37 +1,27 @@
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import Dice from './Dice';
-window.TWEEN = TWEEN
+import {Dice,DiceGroup} from './Dice';
 window.THREE = THREE
 
 class Main {
 
     /** Hello dolly */
-    constructor(container, width = 800, height = 500) {
-        this.public({ container, width, height })
+    constructor(container) {
+        this.public({ container })
         this.init()
     }
 
     /** Add properies to the class instance */
     public(obj) { Object.keys(obj).forEach(key => this[key] = obj[key]) }
 
+    /** Bind some functions */
+    bind(arr) { arr.forEach(fn => this[fn.name] = this[fn.name].bind(this)) }
+
+    
+
     /** Build */
     init() {
-
-        const coords = {x: 0, y: 0} // Start at (0, 0)
-
-       
-	const tween = new TWEEN.Tween(coords, false) // Create a new tween that modifies 'coords'.
-		.to({x: 300, y: 200}, 1000) // Move to (300, 200) in 1 second.
-		.easing(TWEEN.Easing.Quadratic.InOut) // Use an easing function to make the animation smooth.
-		.onUpdate((obj) => {
-            console.log(obj)
-			// Called after tween.js updates 'coords'.
-			// Move 'box' to the position described by 'coords' with a CSS translation.
-			//box.style.setProperty('transform', 'translate(' + coords.x + 'px, ' + coords.y + 'px)')
-		})
-		.start() // Start the tween immediately.
 
         /** Scene */
         const scene = new THREE.Scene();
@@ -40,17 +30,17 @@ class Main {
         const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(100, 100),
             new THREE.MeshPhongMaterial({
-                color: 0x00ff00,
-                shininess: 0,
+                color: 0xffbbff,
+                //shininess: true,
             }));
         plane.geometry.rotateX(Math.PI * 1.5)
         plane.receiveShadow = true
 
         /** Ambient Light */
-        const ambient = new THREE.AmbientLight(0xffffff, 0.1)
+        const ambient = new THREE.AmbientLight(0xffffff, 1)
 
         /** Directional Light */
-        const light = new THREE.DirectionalLight(0xffffff, 0.5);
+        const light = new THREE.DirectionalLight(0xffffff, 1.5);
         light.position.set(50, 50, 50);
         light.castShadow = true
         light.shadow.camera.top = -75;
@@ -65,17 +55,17 @@ class Main {
         /** Debug light settings */
         const lightHelper = new THREE.CameraHelper(light.shadow.camera)
 
-        /* Dice */
-        const dice = new Dice()
-        dice.position.set(20,10/3,20)
-        window.d = dice
+         /* Dice */
+        const dice = new DiceGroup()
+        dice.roll(undefined,0 )
         scene.add(dice)
+       
 
         /** Stack */
         scene.add(plane)
         scene.add(ambient);
         scene.add(light);
-        scene.add(lightHelper)
+        //scene.add(lightHelper)
 
         /** Camera */
         const camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000)
@@ -88,16 +78,20 @@ class Main {
         controls.zoomSpeed = 3
         controls.update();
 
+        /** Register interactive objects */
+        this.appendInteractiveObjects([dice])
+
         /** Public  */
         this.public({ dice, scene, camera })
     }
 
 
+
+
     update(time) {
 
-       
         /** Request next frame */
-        this.animationFrame = requestAnimationFrame((time) => this.update(time));
+        this.animationFrame = requestAnimationFrame((time) => this.update());
 
         try {
             /** Render */
@@ -114,21 +108,78 @@ class Main {
     /** */
     start() {
 
+        /** Binding event handlers */
+        this.bind([
+            this.onWindowResize,
+            this.onPointerDown,
+            this.onPointerMove
+        ])
+
         /** Safety catch */
         this.stop()
 
         /** Create renderer */
         this.renderer = new THREE.WebGLRenderer({ alpha: false });
-        this.renderer.setSize(this.width, this.height);
         this.renderer.shadowMap.enabled = true;
+
+        /** Enable auto resize */
+        this.onWindowResize();
+        window.addEventListener('resize', this.onWindowResize);
 
         /** Add to DOM */
         this.container.appendChild(this.renderer.domElement)
 
-        /** Start gameloop */
+        /** Game interactions */
+        this.raycaster = new THREE.Raycaster()
+        document.addEventListener('pointermove', this.onPointerMove);
+        document.addEventListener('pointerdown', this.onPointerDown);
+
+        /** Start the renderloop */
         this.update()
 
+    }
 
+
+    /** Store in400teractive objects */
+    interactiveObjects = []
+    appendInteractiveObjects(arr = []) {
+        this.interactiveObjects = this.interactiveObjects.concat(
+            arr.filter(e => this.interactiveObjects.indexOf(e) === -1)
+        )
+    }
+
+    /** Find and store objects under cursor */
+    objectsUnderPoint = []
+    onPointerMove(event) {
+        const pointer = {
+            x: (event.clientX / window.innerWidth) * 2 - 1,
+            y: -(event.clientY / window.innerHeight) * 2 + 1
+        }
+
+        /** Find objects under cursor */
+        this.raycaster.setFromCamera(pointer, this.camera);
+        this.objectsUnderPoint = this.raycaster.intersectObjects(
+            this.interactiveObjects
+        )
+
+        /** Show as clickable */
+        this.container.style.cursor = this.objectsUnderPoint.length ? 'pointer' : 'auto'
+    }
+
+    /** Handle user click */
+    onPointerDown(event) {
+        this.objectsUnderPoint.forEach((intersect) => {
+            const {object} = intersect
+            console.log('CLICK', object.constructor.name )
+            if (object instanceof DiceGroup) object.roll()
+        });
+    }
+
+    /** Handle window resize */
+    onWindowResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     /** */
@@ -136,6 +187,11 @@ class Main {
 
         /** Stop rendering */
         cancelAnimationFrame(this.animationFrame)
+
+        /** Stop interaction-listeners */
+        window.removeEventListener('resize', this.onWindowResize)
+        document.removeEventListener('pointerdown', this.onPointerDown);
+        document.removeEventListener('pointermove', this.onPointerMove);
 
         /** Dispose renderer and cleanup DOM */
         if (this.renderer) {
