@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {Dice,DiceGroup} from './Dice';
+import {DiceGroup} from './Dice';
 window.THREE = THREE
 
 class Main {
@@ -53,7 +53,8 @@ class Main {
         light.shadow.mapSize.height = 1024;
 
         /** Debug light settings */
-        const lightHelper = new THREE.CameraHelper(light.shadow.camera)
+        //const lightHelper = new THREE.CameraHelper(light.shadow.camera)
+        //scene.add(lightHelper)
 
          /* Dice */
         const dice = new DiceGroup()
@@ -65,7 +66,7 @@ class Main {
         scene.add(plane)
         scene.add(ambient);
         scene.add(light);
-        //scene.add(lightHelper)
+        
 
         /** Camera */
         const camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000)

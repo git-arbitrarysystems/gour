@@ -6,7 +6,7 @@ class DiceGroup extends THREE.Mesh {
     constructor(size = 6) {
 
         let tileWidth,
-        tileHeight,
+        //tileHeight,
         tileDepth;
 
         const array = Array(4).fill().map((n,index) => {
@@ -14,7 +14,7 @@ class DiceGroup extends THREE.Mesh {
             if (!tileWidth) {
                 dice.geometry.computeBoundingBox()
                 tileWidth = dice.geometry.boundingBox.max.x - dice.geometry.boundingBox.min.x;
-                tileHeight = dice.geometry.boundingBox.max.y - dice.geometry.boundingBox.min.y;
+                //tileHeight = dice.geometry.boundingBox.max.y - dice.geometry.boundingBox.min.y;
                 tileDepth = dice.geometry.boundingBox.max.z - dice.geometry.boundingBox.min.z;
             }
             const y = Math.floor(index / 2),
@@ -186,22 +186,22 @@ Dice.renderCanvasTexture = function (options = {}) {
     const canvas = new OffscreenCanvas(options.width, options.height)
 
     /** Specific implementations */
-    const { width: w, height: h, tipSize, drawLeftTip, drawRightTip, drawTopTip, tipColor } = options
+    const { width: w, height: h, tipSize, drawLeftTip, drawRightTip, drawTopTip, tipColor, fillColor } = options
     canvas.width = w
     canvas.height = h
 
     /** Background color */
     const ctx = canvas.getContext('2d')
-    ctx.fillStyle = options.fillColor;
+    ctx.fillStyle = fillColor;
     ctx.fillRect(0, 0, w, h)
 
     /** Top bar */
-    ctx.fillStyle = options.tipColor
+    ctx.fillStyle = tipColor
     if (drawTopTip) ctx.fillRect(0, 0, w, tipSize)
 
 
     /** Side tips */
-    const tipHeight = Math.tan(Math.PI / 3) * options.tipSize
+    const tipHeight = Math.tan(Math.PI / 3) * tipSize
     if (drawLeftTip) {
         ctx.beginPath()
         ctx.moveTo(0, h)
