@@ -78,7 +78,7 @@ const App = () => {
     <CssBaseline />
     <Container sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 5 }}>
 
-      <Tetrahedron />
+      {/* <Tetrahedron /> */}
       {/* <Box>
       <Button variant='contained' disabled={!!state} onClick={start}>start</Button>
       </Box> */}

@@ -10,3 +10,6 @@ root.render(
   </React.StrictMode>
 );
 
+if (module.hot && process.env.NODE_ENV !== 'production') {
+  module.hot.accept();
+}

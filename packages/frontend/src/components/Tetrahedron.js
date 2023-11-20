@@ -97,39 +97,10 @@ const Tetrahedron = props => {
         /** Construct Tetrahedron */
         var geometry = new THREE.TetrahedronGeometry(1);
 
-        /** Make it sit on the plane */
-        geometry.applyMatrix4(
-            new THREE.Matrix4().makeRotationAxis(
-                new THREE.Vector3(1, 0, 1).normalize(),
-                Math.atan(Math.sqrt(2))
-            )
-        );
-        geometry.translate(0, 1 / 3, 0);
+       
 
 
-        geometry.addGroup(0, 3, 0);
-        geometry.addGroup(3, 3, 1);
-        geometry.addGroup(6, 3, 2);
-        geometry.addGroup(9, 3, 3);
-        geometry.setAttribute("uv", new THREE.Float32BufferAttribute([ // UVs, 
-            //numbers here are to describe uv coordinate, so they are actually customizable
-            // if you want to customize it, you have to check the vertices position array first. 
-            0, 0,
-            1, 0,
-            0.5, 1,
-            //
-            1, 0,
-            0.5, 1,
-            0, 0,
-            //
-            1, 0,
-            0.5, 1,
-            0, 0,
-            //
-            0, 0,
-            1, 0,
-            0.5, 1
-        ], 2));
+       
        
 
         /** Add a debug material */

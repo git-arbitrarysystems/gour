@@ -1,13 +1,14 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@babel/plugin-proposal-private-property-in-object': ~7.21.11
+  '@babel/plugin-transform-private-property-in-object': ~7.23.4
   '@emotion/react': ~11.11.1
   '@emotion/styled': ~11.11.0
   '@mui/material': ~5.14.17
   '@rush-temp/gour.api': file:./projects/gour.api.tgz
   '@rush-temp/gour.frontend': file:./projects/gour.frontend.tgz
   '@rush-temp/gour.three': file:./projects/gour.three.tgz
+  '@tweenjs/tween.js': ~21.0.0
   http-proxy-middleware: ~2.0.6
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -15,13 +16,14 @@ specifiers:
   three: ~0.158.0
 
 dependencies:
-  '@babel/plugin-proposal-private-property-in-object': 7.21.11
+  '@babel/plugin-transform-private-property-in-object': 7.23.4
   '@emotion/react': 11.11.1_react@18.2.0
   '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
   '@mui/material': 5.14.17_aa3274991927adc2766d9259998fdd18
   '@rush-temp/gour.api': file:projects/gour.api.tgz
   '@rush-temp/gour.frontend': file:projects/gour.frontend.tgz
   '@rush-temp/gour.three': file:projects/gour.three.tgz
+  '@tweenjs/tween.js': 21.0.0
   http-proxy-middleware: 2.0.6
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1135,6 +1137,18 @@ packages:
       '@babel/helper-create-class-features-plugin': 7.22.15_@babel+core@7.23.2
       '@babel/helper-plugin-utils': 7.22.5
       '@babel/plugin-syntax-private-property-in-object': 7.14.5_@babel+core@7.23.2
+    dev: false
+
+  /@babel/plugin-transform-private-property-in-object/7.23.4:
+    resolution: {integrity: sha512-9G3K1YqTq3F4Vt88Djx1UZ79PDyj+yKRnUy7cZGSMe+a7jkwD259uKKuUzQlPkGam7R+8RJwh5z4xO27fA1o2A==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/helper-annotate-as-pure': 7.22.5
+      '@babel/helper-create-class-features-plugin': 7.22.15
+      '@babel/helper-plugin-utils': 7.22.5
+      '@babel/plugin-syntax-private-property-in-object': 7.14.5
     dev: false
 
   /@babel/plugin-transform-property-literals/7.22.5_@babel+core@7.23.2:
@@ -2599,6 +2613,10 @@ packages:
   /@trysound/sax/0.2.0:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
+    dev: false
+
+  /@tweenjs/tween.js/21.0.0:
+    resolution: {integrity: sha512-qVfOiFh0U8ZSkLgA6tf7kj2MciqRbSCWaJZRwftVO7UbtVDNsZAXpWXqvCDtIefvjC83UJB+vHTDOGm5ibXjEA==}
     dev: false
 
   /@types/babel__core/7.20.3:
@@ -10636,11 +10654,12 @@ packages:
     dev: false
 
   file:projects/gour.frontend.tgz:
-    resolution: {integrity: sha512-3LQZe9JF3nhMs8sibyaAr34Za4oG8Wi+XM1hRc7iMPbxWKOclsgjpcrJiexncDoma+oGvQfBdWBC/og8AEd4mQ==, tarball: file:projects/gour.frontend.tgz}
+    resolution: {integrity: sha512-OllHsFqjkCCYFhS4P3/7wsZSCdhOt4xml3DqVp89c12syOkSyZIjjaHVmBhOs7Mop88B5oQmZFrAJSnd85yRjg==, tarball: file:projects/gour.frontend.tgz}
     name: '@rush-temp/gour.frontend'
     version: 0.0.0
     dependencies:
       '@babel/plugin-proposal-private-property-in-object': 7.21.11
+      '@babel/plugin-transform-private-property-in-object': 7.23.4
       '@emotion/react': 11.11.1_react@18.2.0
       '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
       '@mui/material': 5.14.17_aa3274991927adc2766d9259998fdd18
@@ -10686,14 +10705,16 @@ packages:
     dev: false
 
   file:projects/gour.three.tgz:
-    resolution: {integrity: sha512-58eOG/sVMV6ihjQirvAdrXRn4ak8OouZa982OuMN7RgzheRm0m4FQoAsl3FTN1+/ywUANpX47Ng2VjD/m8JTzQ==, tarball: file:projects/gour.three.tgz}
+    resolution: {integrity: sha512-34dpPytNoTWcRa6dW1cOFfLklOUwn/lzwxVzCDfTa6/Cl6L7IbuLhTnHNheljFAAxBXWWQDWNs9cyAoK5+8Few==, tarball: file:projects/gour.three.tgz}
     name: '@rush-temp/gour.three'
     version: 0.0.0
     dependencies:
       '@babel/plugin-proposal-private-property-in-object': 7.21.11
+      '@babel/plugin-transform-private-property-in-object': 7.23.4
       '@emotion/react': 11.11.1_react@18.2.0
       '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
       '@mui/material': 5.14.17_aa3274991927adc2766d9259998fdd18
+      '@tweenjs/tween.js': 21.0.0
       http-proxy-middleware: 2.0.6
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
