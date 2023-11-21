@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {DiceGroup} from './DiceGroup';
-import { Tile } from './Tile';
+import { Board } from './Board';
+import { Chip } from './Chip';
 window.THREE = THREE
 
 class Main {
@@ -32,16 +33,19 @@ class Main {
             new THREE.PlaneGeometry(100, 100),
             new THREE.MeshPhongMaterial({
                 color: 0xffbbff,
-                //shininess: true,
-            }));
+                emissive:0xff0000,
+                shininess: 3,
+                reflectivity:100
+            })
+        );
         plane.geometry.rotateX(Math.PI * 1.5)
         plane.receiveShadow = true
 
         /** Ambient Light */
-        const ambient = new THREE.AmbientLight(0xffffff, 1)
+        const ambient = new THREE.AmbientLight(0xdddddd, .75)
 
         /** Directional Light */
-        const light = new THREE.DirectionalLight(0xffffff, 1.5);
+        const light = new THREE.DirectionalLight(0xffff00, 1.5);
         light.position.set(50, 50, 50);
         light.castShadow = true
         light.shadow.camera.top = -75;
@@ -61,12 +65,24 @@ class Main {
         const dice = new DiceGroup()
         dice.roll(undefined,0 )
         scene.add(dice)
-        dice.position.set(-40,0,30)
+        dice.position.set(30,0,30)
        
         /** Board */
-        const tile = new Tile()
-        scene.add(tile)
+        const board = new Board()
+        board.position.set(0,0,0)
+        scene.add(board)
 
+        board.setChipOnTile(null,0,0)
+        board.setChipOnTile(null,4,1)
+        board.setChipOnTile(null,3,1)
+
+        const chip = new Chip(board.chipSize, board.chipHeight)
+        chip.position.set(10,0,30)
+        scene.add(chip)
+
+        setTimeout( () => 
+            board.moveChipToTile(chip, 3,2)
+        , 1000)
 
 
         /** Stack */
@@ -87,10 +103,10 @@ class Main {
         controls.update();
 
         /** Register interactive objects */
-        this.appendInteractiveObjects([dice])
+        this.appendInteractiveObjects([dice, board])
 
         /** Public  */
-        this.public({ dice, scene, camera })
+        this.public({ dice, scene, camera, board })
     }
 
 
@@ -128,8 +144,10 @@ class Main {
 
         /** Create renderer */
         this.renderer = new THREE.WebGLRenderer({ alpha: false });
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMapSoft = true;
+        //this.renderer.toneMapping = THREE.CineonToneMapping 
 
         /** Enable auto resize */
         this.onWindowResize();
@@ -180,7 +198,15 @@ class Main {
         this.objectsUnderPoint.forEach((intersect) => {
             const {object} = intersect
             console.log('CLICK', object.constructor.name )
-            if (object instanceof DiceGroup) object.roll()
+            if (object instanceof DiceGroup){ 
+                object.roll()
+            }else if ( object instanceof Chip ){
+                this.board.moveChipToTile(
+                    object,
+                    Math.floor( Math.random() * 8),
+                    Math.floor( Math.random() * 3)
+                )
+            }
         });
     }
 
