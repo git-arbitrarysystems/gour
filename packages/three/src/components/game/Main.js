@@ -59,6 +59,7 @@ class Main {
 
         /** Debug light settings */
         const lightHelper = new THREE.CameraHelper(light.shadow.camera)
+        lightHelper.visible = false
         scene.add(lightHelper)
 
          /* Dice */
