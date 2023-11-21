@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {DiceGroup} from './Dice';
+import {DiceGroup} from './DiceGroup';
+import { Tile } from './Tile';
 window.THREE = THREE
 
 class Main {
@@ -53,14 +54,20 @@ class Main {
         light.shadow.mapSize.height = 1024;
 
         /** Debug light settings */
-        //const lightHelper = new THREE.CameraHelper(light.shadow.camera)
-        //scene.add(lightHelper)
+        const lightHelper = new THREE.CameraHelper(light.shadow.camera)
+        scene.add(lightHelper)
 
          /* Dice */
         const dice = new DiceGroup()
         dice.roll(undefined,0 )
         scene.add(dice)
+        dice.position.set(-40,0,30)
        
+        /** Board */
+        const tile = new Tile()
+        scene.add(tile)
+
+
 
         /** Stack */
         scene.add(plane)
@@ -122,6 +129,7 @@ class Main {
         /** Create renderer */
         this.renderer = new THREE.WebGLRenderer({ alpha: false });
         this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMapSoft = true;
 
         /** Enable auto resize */
         this.onWindowResize();
