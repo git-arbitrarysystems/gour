@@ -7,11 +7,11 @@ class Lights extends THREE.Group {
         const { dice } = targets;
 
         /** Ambient Light */
-        const ambient = new THREE.AmbientLight(0xffffff, .15)
-        this.add(ambient)
+        // const ambient = new THREE.AmbientLight(0xffffff, .05)
+        // this.add(ambient)
 
         /** Directional Light */
-        this.mainDirectionalLight = new THREE.DirectionalLight(0xffffcc, 2.25);
+        this.mainDirectionalLight = new THREE.DirectionalLight(0xffffcc, .25);
         this.mainDirectionalLight.position.set(30, 30, 30);
         this.add(this.mainDirectionalLight)
 
@@ -20,8 +20,11 @@ class Lights extends THREE.Group {
 
 
         /** */
-        this.spot = new THREE.SpotLight(0xff0000,50,100,Math.PI*0.1,1,1.1)
-        this.spot.position.set(dice.position.x, 50, dice.position.y)
+        this.spot = new THREE.SpotLight(
+            0xff0000, 2, 100,
+            Math.PI*0.25, 0.5, 0
+        )
+        this.spot.position.set(dice.position.x-20, 50, dice.position.z+30)
         this.spot.target = dice
         this.add(this.spot)
 
@@ -33,7 +36,7 @@ class Lights extends THREE.Group {
     }
 
     update() {
-        this.mainDirectionalLight?.helper.update()
+        //this.mainDirectionalLight?.helper?.update()
         this.spot.helper?.update()
     }
 }
