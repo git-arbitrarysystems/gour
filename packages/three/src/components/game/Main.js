@@ -4,6 +4,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {DiceGroup} from './DiceGroup';
 import { Board } from './Board';
 import { Chip } from './Chip';
+import { ChipStack } from './ChipStack';
+import { Spot } from './Spot';
+import { Lights } from './Lights';
 window.THREE = THREE
 
 class Main {
@@ -30,67 +33,36 @@ class Main {
 
         /** Plane */
         const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(100, 100),
+            new THREE.PlaneGeometry(120, 80),
             new THREE.MeshPhongMaterial({
-                color: 0xffbbff,
-                emissive:0xff0000,
-                shininess: 3,
-                reflectivity:100
+                color: 0xffffff,
+                //emissive:0x660066,
+                //shininess: 3,
+                //reflectivity:100
             })
         );
         plane.geometry.rotateX(Math.PI * 1.5)
         plane.receiveShadow = true
-
-        /** Ambient Light */
-        const ambient = new THREE.AmbientLight(0xdddddd, .75)
-
-        /** Directional Light */
-        const light = new THREE.DirectionalLight(0xffff00, 1.5);
-        light.position.set(50, 50, 50);
-        light.castShadow = true
-        light.shadow.camera.top = -75;
-        light.shadow.camera.bottom = 75;
-        light.shadow.camera.left = -75;
-        light.shadow.camera.right = 75;
-        light.shadow.camera.near = -20;
-        light.shadow.camera.far = 200;
-        light.shadow.mapSize.width = 1024;
-        light.shadow.mapSize.height = 1024;
-
-        /** Debug light settings */
-        const lightHelper = new THREE.CameraHelper(light.shadow.camera)
-        lightHelper.visible = false
-        scene.add(lightHelper)
-
-         /* Dice */
-        const dice = new DiceGroup()
-        dice.roll(undefined,0 )
-        scene.add(dice)
-        dice.position.set(30,0,30)
+        scene.add(plane)
        
         /** Board */
         const board = new Board()
-        board.position.set(0,0,0)
+        board.position.set(-10,0,0)
         scene.add(board)
-
-        board.setChipOnTile(null,0,0)
-        board.setChipOnTile(null,4,1)
-        board.setChipOnTile(null,3,1)
-
-        const chip = new Chip(board.chipSize, board.chipHeight)
-        chip.position.set(10,0,30)
-        scene.add(chip)
-
-        setTimeout( () => 
-            board.moveChipToTile(chip, 3,2)
-        , 1000)
-
-
-        /** Stack */
-        scene.add(plane)
-        scene.add(ambient);
-        scene.add(light);
         
+         /* Dice */
+         const dice = new DiceGroup()
+         dice.roll(undefined,0 )
+         scene.add(dice)
+         dice.position.set(45,0,0)
+         dice.rotateY(Math.PI * 0.5)
+
+        
+        /** Construct lights after possible target content  */
+        const lights = new Lights({dice})
+        scene.add(lights)
+
+
 
         /** Camera */
         const camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000)
@@ -107,12 +79,17 @@ class Main {
         this.appendInteractiveObjects([dice, board])
 
         /** Public  */
-        this.public({ dice, scene, camera, board })
+        this.public({ dice, scene, camera, board, lights })
     }
 
 
-
-
+    animationsRunning
+    setAnimationsRunning(n){
+        if( n !== this.animationsRunning ){
+            this.animationsRunning = n;
+            console.log(this.animationsRunning)
+        }
+    }
     update(time) {
 
         /** Request next frame */
@@ -123,7 +100,9 @@ class Main {
             this.renderer.render(this.scene, this.camera);
 
             /** Update stuff */
+            this.lights.update()
             TWEEN.update()
+            this.setAnimationsRunning(TWEEN.getAll().length)
         } catch (e) {
             this.stop();
             throw (e)
@@ -202,11 +181,19 @@ class Main {
             if (object instanceof DiceGroup){ 
                 object.roll()
             }else if ( object instanceof Chip ){
-                this.board.moveChipToTile(
-                    object,
-                    Math.floor( Math.random() * 8),
-                    Math.floor( Math.random() * 3)
+                if( Math.random() < .5 ){
+                object.moveToTile(
+                    this.board,
+                    Math.floor(Math.random() * 8),
+                    Math.floor(Math.random() * 3),
+                    true
                 )
+                }else{
+                    object.moveToStack(
+                        this.board.stacks[ Math.floor( Math.random() * this.board.stacks.length) ],
+                        true
+                    )
+                }
             }
         });
     }

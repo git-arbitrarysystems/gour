@@ -2,20 +2,20 @@ import * as THREE from 'three'
 import { Tile } from './Tile';
 import { Chip } from './Chip';
 import * as  TWEEN from '@tweenjs/tween.js';
+import { ChipStack } from './ChipStack';
 
 class Board extends THREE.Group {
-    constructor(tileSize = 10) {
+    constructor(tileSize = 10, colors=[0xffaaff, 0x337733]) {
         super()
 
         const rows = 3, cols = 8;
-
-        this.grid = Array(rows).fill().map(() => Array(cols))
-        this.chips = []
+        this.grid = Array(rows).fill().map(() => Array(cols).fill())
 
         this.tileSize = tileSize;
         this.chipSize = tileSize * 0.15;
         this.chipHeight = tileSize * 0.15
 
+        /** Add tiles to the board */
         for (var y = 0; y < rows; y++) {
             for (var x = 0; x < cols; x++) {
                 const enabled = y === 1 || (x < 4 || x > 5)
@@ -29,74 +29,87 @@ class Board extends THREE.Group {
                         (y + 0.5) * tileSize - (rows * 0.5 * tileSize)
                     )
                     this.add(tile)
-                    this.grid[y][x] = tile;
+                    this.grid[y][x] = { tile };
                 }
             }
         }
 
+        /** Add 2 stacks of chips for each player */
+        this.stacks = Array(4).fill().map( (n,i) => {
+            const player = Math.floor(i/2);
+            const type = i%2;
+            const stack =  new ChipStack(this.chipSize, this.chipHeight, colors[player],
+                    type === 0 ? 7 : 0
+                )
+            const x = (-1 + type * 2) * tileSize * 2 + tileSize,
+                y = 0,
+                z = (-1 + player * 2) * tileSize * 2.5;
+            stack.position.set(x,y,z)
+
+
+            this.add(stack)
+            return stack
+        })
 
     }
 
-    setChipOnTile(chip, x, y) {
-        const tile = this.grid[y] ? this.grid[y][x] : null
-        if (tile) {
-
-            if (!chip) chip = new Chip(this.chipSize, this.chipHeight)
-            chip.position.set(
-                tile.position.x,
-                tile.position.y + tile.baseY,
-                tile.position.z
-            )
-            this.add(chip)
-        } else {
-            console.warn('No tile here', x, y)
+    /** Register a chip for this board and return it's intended position */
+    registerChip(chip, x, y){
+        /** Check validity of move */
+        if (!chip) {
+            console.warn('You must pass a Chip')
+            return false
         }
+
+        if (!chip instanceof Chip) {
+            console.warn(`Chip ${chip} is not of class Chip`)
+            return false
+        }
+        if (!this.grid[y]) {
+            console.warn(`Grid[${y}] doesn't exist`)
+            return false
+        }
+        if (!this.grid[y][x]) {
+            console.warn(`Grid[${y}][${x}] doesn't exist`)
+            return false
+        }
+
+        const tile = this.grid[y][x].tile
+        if (!tile) {
+            console.warn(`Grid[${y}][${x}].tile is not a tile`)
+            return false
+        }
+        if (this.grid[y][x].chip) {
+            console.warn(`Grid[${y}][${x}] is already occupied`)
+            return false
+        }
+
+        
+        if( chip.unregister ) chip.unregister()
+        this.grid[y][x].chip = chip;
+        chip.unregister = () => this.unregisterChip(chip)
+
+        return {
+            x:tile.position.x,
+            y:tile.position.y + tile.baseY,
+            z:tile.position.z
+        } 
     }
 
-    moveChipToTile(chip, x, y, duration = 300) {
-        console.log('moveChipToTile', chip, x, y)
-        const tile = this.grid[y] ? this.grid[y][x] : null
-        if (tile && chip) {
+    unregisterChip(chip){
+        this.grid.forEach( row => {
+            row.forEach( col => {
+                if( col && col.chip === chip ) delete col.chip
+            })
+        })
+    }
 
-            /** Store */
-            if( this.chips.indexOf(chip) === -1 ){
-                this.chips.push(chip)
-            }
-
-            /** Current position in board space */
-            const current = this.worldToLocal(
-                chip.parent.localToWorld(chip.position)
-            )
-
-            /** Move to boardspace */
-            chip.position.set(current.x, current.y, current.z)
-            this.add(chip)
-
-            /** Linear target */
-            const target = new THREE.Vector3(tile.position.x, tile.position.y + tile.baseY, tile.position.z)
-
-            /** Intermediate Y */
-            const y = (current.y + target.y) * 0.5 + 10
-
-            /** Linear movement */
-            new TWEEN.Tween(current).to(target, duration)
-                .onUpdate(({ x, y, z }) => {
-                    chip.position.set(x, chip.position.y, z)
-                }).start()
-
-            /** Jump */
-            const updateJumpPosition = ({ y }) => chip.position.set(chip.position.x, y, chip.position.z)
-            new TWEEN.Tween({ y: current.y }).to({ y }, duration * 0.5).easing(TWEEN.Easing.Cubic.Out)
-                .onUpdate(updateJumpPosition).chain(
-                    new TWEEN.Tween({ y }).to({ y: target.y }, duration * 0.5).onUpdate(updateJumpPosition).easing(TWEEN.Easing.Cubic.In)
-                ).start()
-
-
-
-
-        } else {
-            console.warn('No tile here', x, y)
-        }
+    debugTiles(){
+        console.log( 
+            this.grid.map( row => {
+                return row.map( col => col ? col.chip ? '1' : '0' : '_').join('')
+            }).join('\n')
+        )
     }
 
 

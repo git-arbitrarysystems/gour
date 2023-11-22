@@ -9,58 +9,41 @@ import { Dice } from './Dice';
 class DiceGroup extends THREE.Mesh {
     constructor(size = 6) {
 
-        let tileWidth,
-        //tileHeight,
-        tileDepth;
+        /** Define gridsize by radius of tetrahedron */
+        const gridSize = (size * 2) * 0.8;
 
-        const array = Array(4).fill().map((n,index) => {
+        /** Define the interactive floor as a Box */
+        super(
+            new THREE.BoxGeometry(gridSize * 2.5, 0, gridSize * 2), 
+            new THREE.MeshBasicMaterial({ wireframe: true, visible:false })
+        )
+
+        /** Create 4 dice */
+        this.array = Array(4).fill().map((n, i) => {
             const dice = new Dice(size);
-            if (!tileWidth) {
-                dice.geometry.computeBoundingBox()
-                tileWidth = dice.geometry.boundingBox.max.x - dice.geometry.boundingBox.min.x;
-                //tileHeight = dice.geometry.boundingBox.max.y - dice.geometry.boundingBox.min.y;
-                tileDepth = dice.geometry.boundingBox.max.z - dice.geometry.boundingBox.min.z;
-            }
-            const y = Math.floor(index / 2),
-                x = index % 2 + (y%2) * 0.5
-
-            dice.position.set(x * tileWidth, size / 3, y * tileWidth)
+            const offset = (Math.floor(i / 2) % 2) * 0.5;
+            const x = (i % 2 + offset - 0.75) * gridSize,
+                y = size / 3,
+                z = (Math.floor(i / 2) - 0.5) * gridSize;
+            dice.position.set(x, y, z)
+            this.add(dice)
             return dice
         })
-        const boxHeight = 0;
-        const geometry = new THREE.BoxGeometry(
-            tileWidth*2.5,
-            boxHeight, 
-            tileWidth+tileDepth
-        )
-        geometry.translate(
-            tileWidth*0.75,
-            0.01 + boxHeight*0.5,
-            tileDepth * 0.5
-        )
-        
-        super(
-            geometry,
-            new THREE.MeshBasicMaterial({ 
-                wireframe:true,
-                //visible:false
-            })
-        )
 
-        array.forEach(dice => this.add(dice))
-        this.array = array;
+
     }
 
-    roll(values = [], duration){
-        this.array.forEach( (dice,i) => {
+    /** Roll all four dice */
+    roll(values = [], duration) {
+        this.array.forEach((dice, i) => {
             dice.roll(
                 values[i] || Math.round(Math.random()),
-                typeof duration === 'number' ? duration : 600 + Math.round( Math.random() * 200 ),
+                typeof duration === 'number' ? duration : 600 + Math.round(Math.random() * 200),
                 3 + Math.random() * 2
             )
         })
-        
+
     }
 }
 
-export {DiceGroup}
+export { DiceGroup }

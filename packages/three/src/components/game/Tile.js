@@ -55,7 +55,7 @@ class Tile extends THREE.Object3D {
         )
 
         plane.geometry.rotateX(-0.5*Math.PI)
-        plane.translateY(height-insetHeight+0.0001)
+        plane.translateY(height-insetHeight+0.001)
         plane.receiveShadow = true
         this.add(plane)
 
