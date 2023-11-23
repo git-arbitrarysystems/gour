@@ -1,16 +1,16 @@
 import * as THREE from 'three'
 import { Tile } from './Tile';
 import { Chip } from './Chip';
-import * as  TWEEN from '@tweenjs/tween.js';
 import { ChipStack } from './ChipStack';
 
 class Board extends THREE.Group {
-    constructor(tileSize = 10, colors=[0xffaaff, 0x337733]) {
+    constructor(tileSize = 10, colors=[0xffccff, 0x663300]) {
         super()
 
         const rows = 3, cols = 8;
         this.grid = Array(rows).fill().map(() => Array(cols).fill())
 
+        this.colors = colors;
         this.tileSize = tileSize;
         this.chipSize = tileSize * 0.15;
         this.chipHeight = tileSize * 0.15
@@ -34,13 +34,11 @@ class Board extends THREE.Group {
             }
         }
 
-        /** Add 2 stacks of chips for each player */
+        /** Add 2 stacks of chips for each player (start, end, start, end)*/
         this.stacks = Array(4).fill().map( (n,i) => {
             const player = Math.floor(i/2);
             const type = i%2;
-            const stack =  new ChipStack(this.chipSize, this.chipHeight, colors[player],
-                    type === 0 ? 7 : 0
-                )
+            const stack =  new ChipStack(this.chipSize, this.chipHeight, colors[player],0)
             const x = (-1 + type * 2) * tileSize * 2 + tileSize,
                 y = 0,
                 z = (-1 + player * 2) * tileSize * 2.5;
@@ -61,7 +59,7 @@ class Board extends THREE.Group {
             return false
         }
 
-        if (!chip instanceof Chip) {
+        if (!(chip instanceof Chip)) {
             console.warn(`Chip ${chip} is not of class Chip`)
             return false
         }
@@ -104,13 +102,6 @@ class Board extends THREE.Group {
         })
     }
 
-    debugTiles(){
-        console.log( 
-            this.grid.map( row => {
-                return row.map( col => col ? col.chip ? '1' : '0' : '_').join('')
-            }).join('\n')
-        )
-    }
 
 
 

@@ -15,6 +15,7 @@ specifiers:
   react-scripts: 5.0.1
   three: ~0.158.0
   three-bvh-csg: ~0.0.13
+  three-mesh-bvh: ~0.6.8
 
 dependencies:
   '@babel/plugin-transform-private-property-in-object': 7.23.4
@@ -30,7 +31,8 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-scripts: 5.0.1_react@18.2.0
   three: 0.158.0
-  three-bvh-csg: 0.0.13_three@0.158.0
+  three-bvh-csg: 0.0.13_d9f73d427aefdcc2211d1beaee36372d
+  three-mesh-bvh: 0.6.8_three@0.158.0
 
 packages:
 
@@ -9790,15 +9792,6 @@ packages:
       three-mesh-bvh: 0.6.8_three@0.158.0
     dev: false
 
-  /three-bvh-csg/0.0.13_three@0.158.0:
-    resolution: {integrity: sha512-Snp1aW+nqc4/6WYkPz1vSC8vF+s96xz8GHXzdheXP6kYvwXZJH0AumWwtqSz04nTlKyFfvS5v0GBzW+5NiPfOw==}
-    peerDependencies:
-      three: '>=0.151.0'
-      three-mesh-bvh: '>=0.6.6'
-    dependencies:
-      three: 0.158.0
-    dev: false
-
   /three-mesh-bvh/0.6.8_three@0.158.0:
     resolution: {integrity: sha512-EGebF9DZx1S8+7OZYNNTT80GXJZVf+UYXD/HyTg/e2kR/ApofIFfUS4ZzIHNnUVIadpnLSzM4n96wX+l7GMbnQ==}
     peerDependencies:
@@ -10739,7 +10732,7 @@ packages:
     dev: false
 
   file:projects/gour.three.tgz:
-    resolution: {integrity: sha512-hb3qjfWFyBqfSLW5b0Yl7qM5try4bG42ERVnrUAMmUP33nqtWDZqkkIMrJn86EAFSJvSyiwo9Fqnx9edslaOOw==, tarball: file:projects/gour.three.tgz}
+    resolution: {integrity: sha512-2O+Z+IJ6462SDrj3ttXXrFi19FnoEEsOedBn+ohtnxqSNL4cbScY78nNSJxDyYRv4nDe/IMb5DMApX/RPn3sPg==, tarball: file:projects/gour.three.tgz}
     name: '@rush-temp/gour.three'
     version: 0.0.0
     dependencies:
@@ -10749,6 +10742,7 @@ packages:
       '@mui/material': 5.14.18_aa3274991927adc2766d9259998fdd18
       '@tweenjs/tween.js': 21.0.0
       http-proxy-middleware: 2.0.6
+      lodash: 4.17.21
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-scripts: 5.0.1_react@18.2.0

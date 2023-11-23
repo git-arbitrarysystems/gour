@@ -50,7 +50,7 @@ class Chip extends THREE.Mesh {
 
     }
 
-    moveToStack(stack, animated = false) {
+    moveToStack(stack, animated = false, onComplete, delayed) {
         const target = stack.registerChip(this)
         if( !target ){
             console.warn('Illegal move')
@@ -59,14 +59,16 @@ class Chip extends THREE.Mesh {
 
         const current = this.moveToSpace(stack)
         if (animated) {
-            this.animate(current, target)
+            this.animate(current, target, onComplete, undefined, delayed)
         } else {
             this.position.set(target.x, target.y, target.z)
+            if( onComplete ) onComplete()
+            
         }
 
     }
 
-    moveToTile(board, x, y, animated = false) {
+    moveToTile(board, x, y, animated = false, onComplete, delayed) {
         const target = board.registerChip(this, x, y)
         if( !target ){
             console.warn('Illegal move')
@@ -74,9 +76,10 @@ class Chip extends THREE.Mesh {
         }
         const current = this.moveToSpace(board)
         if (animated) {
-            this.animate(current, target)
+            this.animate(current, target, onComplete, undefined, delayed)
         } else {
             this.position.set(target.x, target.y, target.z)
+            if( onComplete ) onComplete()
         }
     }
 
@@ -88,12 +91,14 @@ class Chip extends THREE.Mesh {
         )
     }
 
-    animate(from, to, duration = 300) {
+    animate(from, to,  onComplete, duration = 300,delayed = false) {
 
         /** Move */
         new TWEEN.Tween(from)
             .to(to, duration)
+            .delay( delayed ? duration : 0)
             .onUpdate(({ x, y, z }) => this.update(x, y, z))
+            .onComplete( onComplete )
             .start()
 
         /** Jump */
@@ -101,6 +106,7 @@ class Chip extends THREE.Mesh {
 
         new TWEEN.Tween({ y: from.y })
             .to(jump, duration * 0.5)
+            .delay( delayed ? duration : 0)
             .easing(TWEEN.Easing.Cubic.Out)
             .onUpdate(({ x, y, z }) => this.update(x, y, z))
             .chain(

@@ -77,7 +77,8 @@ class Dice extends THREE.Mesh {
 
     roll(value = 0, duration = 1000, height = 3) {
 
-
+        if( this.value === value && duration === 0 ) return; 
+        this.value = value;
 
         /** Store current rotation */
         var rotationFrom = [this.rotation.x, this.rotation.y, this.rotation.z],

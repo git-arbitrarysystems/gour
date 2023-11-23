@@ -15,7 +15,8 @@
     "@tweenjs/tween.js": "~21.0.0",
     "@babel/plugin-transform-private-property-in-object": "~7.23.4",
     "three-bvh-csg": "~0.0.13",
-    "three-mesh-bvh": "~0.6.8"
+    "three-mesh-bvh": "~0.6.8",
+    "lodash": "~4.17.21"
     
   },
   "scripts": {

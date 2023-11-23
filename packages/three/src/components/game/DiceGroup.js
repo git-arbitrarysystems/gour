@@ -14,8 +14,8 @@ class DiceGroup extends THREE.Mesh {
 
         /** Define the interactive floor as a Box */
         super(
-            new THREE.BoxGeometry(gridSize * 2.5, 0, gridSize * 2), 
-            new THREE.MeshBasicMaterial({ wireframe: true, visible:false })
+            new THREE.BoxGeometry(gridSize * 2.5, gridSize * 2, gridSize * 2),
+            new THREE.MeshBasicMaterial({ wireframe: true, visible: false })
         )
 
         /** Create 4 dice */
@@ -34,14 +34,20 @@ class DiceGroup extends THREE.Mesh {
     }
 
     /** Roll all four dice */
-    roll(values = [], duration) {
-        this.array.forEach((dice, i) => {
+    roll(onComplete, values = [], duration = 800, variation = 200) {
+        values = this.array.map((dice, i) => {
+            const value = typeof values[i] === 'number' ? values[i] : Math.round(Math.random())
             dice.roll(
-                values[i] || Math.round(Math.random()),
-                typeof duration === 'number' ? duration : 600 + Math.round(Math.random() * 200),
+                value,
+                duration - Math.round(Math.random() * variation),
                 3 + Math.random() * 2
             )
+            return value
         })
+
+        if (onComplete) setTimeout(() => {
+            onComplete(values)
+        }, duration)
 
     }
 }

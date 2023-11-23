@@ -3,14 +3,14 @@ import { Chip } from './Chip'
 
 class ChipStack extends THREE.Mesh {
     constructor(chipSize, chipHeight, color, numberOfChips = 0) {
-        
+
 
         const chipSpace = chipSize * 3
         const boxDepth = chipSpace * 3,
             boxWidth = chipSpace * 3.5;
         super(
-            new THREE.BoxGeometry(boxWidth,0,boxDepth),
-            new THREE.MeshBasicMaterial({color:0xffffff, wireframe:true, visible:false})
+            new THREE.BoxGeometry(boxWidth, 0, boxDepth),
+            new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, visible: false })
         )
 
         this.chipSpace = chipSpace
@@ -18,55 +18,75 @@ class ChipStack extends THREE.Mesh {
         this.chipHeight = chipHeight;
         this.chipColor = color;
 
-       
+
         /** Register chips on a 3x3 grid */
         this.slots = Array(9).fill()
-        this.init(numberOfChips)
-       
+
     }
 
-    init(num){
-        Array(num).fill().forEach( () => {
-            const chip = new Chip(this.chipSize, this.chipHeight, this.chipColor);
-            chip.moveToStack(this)
-        })
+    get count() {
+        return this.slots.reduce((p, v) => v ? p + 1 : p, 0)
     }
+
+    init(targetChipCount) {
+        //console.log('ChipStack.init', { count: this.count, targetChipCount })
+        if (targetChipCount > this.count) {
+            Array(targetChipCount - this.count).fill().forEach(() => {
+                const chip = new Chip(this.chipSize, this.chipHeight, this.chipColor);
+                chip.moveToStack(this)
+            })
+        } else if (targetChipCount < this.count) {
+            Array(this.count - targetChipCount).fill().forEach(() => {
+                const chip = this.slots[this.getRandomSlotIndex(false)]
+                chip.unregister()
+                chip.parent.remove(chip)
+            })
+        }
+
+
+    }
+
+
 
     /** Get the coordinates for this slot */
-    getSlotPosition(index){
+    getSlotPosition(index) {
 
-         /** Grid coords */
-         const x = (index % 3)-1
-         const z = Math.floor(index / 3)-1
+        /** Grid coords */
+        const x = (index % 3) - 1
+        const z = Math.floor(index / 3) - 1
 
-         return {
-            x:(x + ((z % 2) * 0.5)) * this.chipSpace,
-            y:0,
+        return {
+            x: (x + ((z % 2) * 0.5)) * this.chipSpace,
+            y: 0,
             z: z * this.chipSpace
-         }
+        }
+    }
+
+    getRandomChip() {
+        return this.slots[this.getRandomSlotIndex(false)]
     }
 
     /** Check for any available slot */
-    getRandomFreeSlotIndex() {
-        
-        const free = this.slots.map(
-            (n, i) => n ? undefined : i
+    getRandomSlotIndex(slotShouldBeFree = true) {
+
+        const available = this.slots.map(
+            (n, i) => slotShouldBeFree !== Boolean(n) ? i : undefined
         ).filter(n => n !== undefined);
-        if( free.length === 0 ){
-            console.warn('No free slots.')
+        if (available.length === 0) {
+            console.warn('No slots.', { slotShouldBeFree })
             return false;
         }
 
-        return free[Math.floor(Math.random() * free.length)]
+        return available[Math.floor(Math.random() * available.length)]
     }
 
     /** Register a chip to this stack and return it's intended position */
-    registerChip(chip){
-        const slot = this.getRandomFreeSlotIndex()
-        if( slot === false ) return false;
-        
+    registerChip(chip) {
+        const slot = this.getRandomSlotIndex()
+        if (slot === false) return false;
+
         /** Unregister from previous context */
-        if( chip.unregister ) chip.unregister()
+        if (chip.unregister) chip.unregister()
         this.slots[slot] = chip;
         chip.unregister = () => this.unregisterChip(chip)
 
@@ -74,15 +94,15 @@ class ChipStack extends THREE.Mesh {
     }
 
     /** Unregister a chip from this stack */
-    unregisterChip(chip){
-        for( var i in this.slots ){
-            if( this.slots[i] == chip ) this.slots[i] = undefined
+    unregisterChip(chip) {
+        for (var i in this.slots) {
+            if (this.slots[i] === chip) this.slots[i] = undefined
         }
     }
 
-  
 
-   
+
+
 }
 
 export { ChipStack }

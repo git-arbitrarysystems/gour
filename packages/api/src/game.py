@@ -132,7 +132,8 @@ class GameOfUr:
             player=self.player,
             dice=self.dice,
             winner=self.get_winner(),
-            chipCount=self.coins_per_player
+            chipCount=self.coins_per_player,
+            tiletypes=TileTypeList
         )
     
     def index_to_coordinates(self, index):
@@ -156,8 +157,8 @@ class GameOfUr:
 
 
     # Rolling the dice
-    def roll(self):
-        self.dice = [randint(0, 1), randint(
+    def roll(self, value):
+        self.dice = value or [randint(0, 1), randint(
             0, 1), randint(0, 1), randint(0, 1)]
 
     def roll_sum(self):
@@ -270,7 +271,7 @@ class GameOfUr:
         # Roll dice
         #
         elif action.type == ActionType.ROLL_DICE:
-            self.roll()
+            self.roll(action.value)
             self.trace('\tvalue:', self.roll_sum(), self.dice)
 
             self.available_moves = self.get_available_moves()
