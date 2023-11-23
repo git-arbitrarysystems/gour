@@ -23,12 +23,12 @@ class Lights extends THREE.Group {
         /** */
         this.mainSpot = new THREE.SpotLight(
             this.randomColor(), 5, 200,
-            Math.PI*0.1, 0.5, 0
+            Math.PI*0.2, 0.5, 0
         )
         this.mainSpot.position.set(
-            dice.position.x-120, 
-            70, 
-            dice.position.z+100
+            dice.position.x+120, 
+            100, 
+            dice.position.z
         )
         this.mainSpot.target = dice
         this.add(this.mainSpot)
