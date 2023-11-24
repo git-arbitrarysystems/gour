@@ -214,7 +214,6 @@ class Main {
             this.renderer.render(this.scene, this.camera);
 
             /** Update stuff */
-            this.lights.update()
             TWEEN.update()
             this.setAnimationsRunning(TWEEN.getAll().length)
         } catch (e) {

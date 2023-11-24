@@ -8,8 +8,9 @@ class Lights extends THREE.Group {
         const { dice, board } = targets;
 
         /** Ambient Light */
-        // const ambient = new THREE.AmbientLight(0xffffff, .05)
-        // this.add(ambient)
+        this.ambient = new THREE.DirectionalLight(0xffffff, 5)
+        this.ambient.visible = false;
+        this.add(this.ambient)
 
         /** Directional Light */
         this.mainDirectionalLight = new THREE.DirectionalLight(this.randomColor(), .125);
@@ -21,24 +22,24 @@ class Lights extends THREE.Group {
 
 
         /** */
-        this.mainSpot = new THREE.SpotLight(
-            this.randomColor(), 5, 200,
+        this.primarySport = new THREE.SpotLight(
+            this.randomColor(), 3, 200,
             Math.PI*0.2, 0.5, 0
         )
-        this.mainSpot.position.set(
+        this.primarySport.position.set(
             dice.position.x+120, 
             100, 
             dice.position.z
         )
-        this.mainSpot.target = dice
-        this.add(this.mainSpot)
+        this.primarySport.target = dice
+        this.add(this.primarySport)
 
-        Lights.castShadow(this.mainSpot, true)
-        Lights.debug(this.mainSpot, false)
+        Lights.castShadow(this.primarySport, true)
+        Lights.debug(this.primarySport, false)
 
         /** */
         this.secondarySpot = new THREE.SpotLight(
-            this.randomColor(), 5, 200,
+            this.randomColor(), 3, 200,
             Math.PI*0.1, 0.25, 0
         )
         this.secondarySpot.position.set(
@@ -55,7 +56,7 @@ class Lights extends THREE.Group {
 
         /** */
         this.tertiarySpot = new THREE.SpotLight(
-            this.randomColor(), 5, 200,
+            this.randomColor(), 3, 200,
             Math.PI*0.1, 0.25, 0
         )
         this.tertiarySpot.position.set(
@@ -73,23 +74,56 @@ class Lights extends THREE.Group {
             
     }
 
+    all(spotsOnly){
+        return [
+            ...this.spots, 
+            this.primarySport, 
+            this.secondarySpot, 
+            this.tertiarySpot,
+        ].concat( spotsOnly ? [] : [this.mainDirectionalLight])
+    }
+
+    randomizeColors(){
+        this.all().forEach( spot => {
+
+             /** Current color in hsl */
+             var hsl = {};
+             new THREE.Color(spot.color.r, spot.color.g, spot.color.b).getHSL(hsl);
+
+            const to = {...hsl, h:Math.random()}
+            new TWEEN.Tween(hsl)
+            .to(to, 5000)
+            .easing(TWEEN.Easing.Cubic.InOut)
+            .onUpdate( ({h, s, l}) => {
+                spot.color.setHSL(h,s,l)
+            })
+            .start()
+
+        })
+    }
+
+    enable(){
+        this.all().forEach( light => light.visible = true )
+        this.ambient.visible = false
+    }
+    disable(){
+        this.all().forEach( light => light.visible = false )
+        this.ambient.visible = true
+    }
+
     randomColor(){
         const color = new THREE.Color();
         color.setHSL(Math.random(), 1,0.5)
         return color
     }
 
-    update() {
-        //this.mainDirectionalLight?.helper?.update()
-        //this.mainSpot?.helper?.update()
-        
-    }
+   
 
     spots = []
     updateSpots(targets){
         
         const lowIntensity = 0,
-            fullIntensity = 6,
+            fullIntensity = 1,
             distance = 50
 
         while( this.spots.length < targets.length ){
@@ -190,6 +224,7 @@ Lights.castShadow = (light, bool) => {
     light.shadow.camera.right = 75;
     light.shadow.camera.near = 5;
     light.shadow.camera.far = 200;
+
     light.shadow.mapSize.width = 1024;
     light.shadow.mapSize.height = 1024;
 }
