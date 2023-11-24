@@ -10,9 +10,11 @@ specifiers:
   '@rush-temp/gour.three': file:./projects/gour.three.tgz
   '@tweenjs/tween.js': ~21.0.0
   http-proxy-middleware: ~2.0.6
+  lodash: ~4.17.21
   react: ^18.2.0
   react-dom: ^18.2.0
   react-scripts: 5.0.1
+  screenfull: ~6.0.2
   three: ~0.158.0
   three-bvh-csg: ~0.0.13
   three-mesh-bvh: ~0.6.8
@@ -27,9 +29,11 @@ dependencies:
   '@rush-temp/gour.three': file:projects/gour.three.tgz
   '@tweenjs/tween.js': 21.0.0
   http-proxy-middleware: 2.0.6
+  lodash: 4.17.21
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-scripts: 5.0.1_react@18.2.0
+  screenfull: 6.0.2
   three: 0.158.0
   three-bvh-csg: 0.0.13_d9f73d427aefdcc2211d1beaee36372d
   three-mesh-bvh: 0.6.8_three@0.158.0
@@ -2214,6 +2218,22 @@ packages:
 
   /@mui/core-downloads-tracker/5.14.18:
     resolution: {integrity: sha512-yFpF35fEVDV81nVktu0BE9qn2dD/chs7PsQhlyaV3EnTeZi9RZBuvoEfRym1/jmhJ2tcfeWXiRuHG942mQXJJQ==}
+    dev: false
+
+  /@mui/icons-material/5.14.18_807efefdc5fb191818188352f936f136:
+    resolution: {integrity: sha512-o2z49R1G4SdBaxZjbMmkn+2OdT1bKymLvAYaB6pH59obM1CYv/0vAVm6zO31IqhwtYwXv6A7sLIwCGYTaVkcdg==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.0.0
+      '@types/react': ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.4
+      '@mui/material': 5.14.18_aa3274991927adc2766d9259998fdd18
+      react: 18.2.0
     dev: false
 
   /@mui/material/5.14.18_aa3274991927adc2766d9259998fdd18:
@@ -9141,6 +9161,11 @@ packages:
       ajv-keywords: 5.1.0_ajv@8.12.0
     dev: false
 
+  /screenfull/6.0.2:
+    resolution: {integrity: sha512-AQdy8s4WhNvUZ6P8F6PB21tSPIYKniic+Ogx0AacBMjKP1GUHN2E9URxQHtCusiwxudnCKkdy4GrHXPPJSkCCw==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+    dev: false
+
   /select-hose/2.0.0:
     resolution: {integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg==}
     dev: false
@@ -10732,13 +10757,14 @@ packages:
     dev: false
 
   file:projects/gour.three.tgz:
-    resolution: {integrity: sha512-2O+Z+IJ6462SDrj3ttXXrFi19FnoEEsOedBn+ohtnxqSNL4cbScY78nNSJxDyYRv4nDe/IMb5DMApX/RPn3sPg==, tarball: file:projects/gour.three.tgz}
+    resolution: {integrity: sha512-yMOs112IRRp8NWzO1cJoD2gfZFqn1/4g2sePID90OXWcBII9ujdaU5ST1wT5cbQ5iC8VMaZ0zUlRkOGKIKyLVQ==, tarball: file:projects/gour.three.tgz}
     name: '@rush-temp/gour.three'
     version: 0.0.0
     dependencies:
       '@babel/plugin-transform-private-property-in-object': 7.23.4
       '@emotion/react': 11.11.1_react@18.2.0
       '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
+      '@mui/icons-material': 5.14.18_807efefdc5fb191818188352f936f136
       '@mui/material': 5.14.18_aa3274991927adc2766d9259998fdd18
       '@tweenjs/tween.js': 21.0.0
       http-proxy-middleware: 2.0.6
@@ -10746,6 +10772,7 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-scripts: 5.0.1_react@18.2.0
+      screenfull: 6.0.2
       three: 0.158.0
       three-bvh-csg: 0.0.13_d9f73d427aefdcc2211d1beaee36372d
       three-mesh-bvh: 0.6.8_three@0.158.0
