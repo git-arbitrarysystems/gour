@@ -109,6 +109,7 @@ class Main {
                     stack.init(chips)
                 } else {
                     const chip = this.board.grid[y][x].chip
+                    console.log(x,y,{chips})
                     if (chips && !chip) {
                         const chip = new Chip(this.board.chipWidth, this.board.chipHeight, this.board.colors[player])
                         chip.moveToTile(this.board, x, y)
