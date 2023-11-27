@@ -23,7 +23,7 @@ async def create_session(response: Response, session_data: SessionData = Depends
         return game.to_dict()
 
     # New game
-    game = GameOfUr(debug=True, coins_per_player=7)
+    game = GameOfUr(debug=True)
     session = uuid4()
     session_data = SessionData(
         created=datetime.now(),

@@ -1,20 +1,21 @@
 import { isEqual } from 'lodash'
-class ApiLink {
+
+class RemoteAPI {
     constructor(onDataChange) {
         this.onDataChange = onDataChange;
+    }
+
+    init(){
         this.create()
     }
 
-
-    get data() { return this.this._data }
+    get data() { return this._data }
     set data(data) {
         if (!isEqual(data, this._data)) {
             this._data = data;
             if (this.onDataChange) this.onDataChange(data)
         }
     }
-
-
 
     create() {
         fetch('/api/create',
@@ -42,7 +43,6 @@ class ApiLink {
             .then(response => response.json())
             .then(data => this.data = data)
     }
-
 }
 
-export { ApiLink }
+export { RemoteAPI }

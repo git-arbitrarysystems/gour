@@ -5,17 +5,19 @@ import { DiceGroup } from './DiceGroup';
 import { Board } from './Board';
 import { Chip } from './Chip';
 import { Lights } from './Lights';
-import { ApiLink } from './ApiLink';
 import { debounce, remove } from 'lodash';
 import { ChipStack } from './ChipStack';
 import { Tile } from './Tile';
+import { LocalAPI } from './LocalAPI';
+import { RemoteAPI } from './RemoteAPI';
+
 window.THREE = THREE
 
 class Main {
 
     /** Hello dolly */
-    constructor(container) {
-        this.public({ container })
+    constructor(container, apiType = 'local') {
+        this.public({ container, apiType })
         this.init()
     }
 
@@ -90,30 +92,27 @@ class Main {
     onData(data) {
 
 
-
-        
         if (!data) {
             this.api.create()
             return;
         }
 
-        const { board, tiletypes, action, dice, player } = data
+        const { board, action, dice, player } = data
 
         /** Update the board */
         board.forEach((row, y) => {
             row.forEach((tile, x) => {
-                const [tileTypeNum, player, chips] = tile;
-                const tileType = tiletypes[tileTypeNum]
+                const [tileType, player, chips] = tile;
                 if (tileType === 'START' || tileType === 'END') {
                     const stack = this.board.stacks[(y === 0 ? 0 : 2) + (tileType === 'END' ? 1 : 0)]
                     stack.init(chips)
                 } else {
                     const chip = this.board.grid[y][x].chip
-                    console.log(x,y,{chips})
+                    //console.log(x,y,{chips})
                     if (chips && !chip) {
                         const chip = new Chip(this.board.chipWidth, this.board.chipHeight, this.board.colors[player])
                         chip.moveToTile(this.board, x, y)
-                    }else if(!chips && chip){
+                    } else if (!chips && chip) {
                         chip.unregister()
                         chip.parent.remove(chip)
                     }
@@ -143,37 +142,37 @@ class Main {
                     return (x === 4 || x === 5) && y !== 1 ? this.board.stacks[(y === 0 ? 0 : 2) + (x === 4 ? 0 : 1)] : undefined;
                 }
                 /** Chip from coords */
-                const c = (x , y) => this.board.grid[y][x]?.chip
+                const c = (x, y) => this.board.grid[y][x]?.chip
 
                 /** Tile from coords */
-                const t = (x , y) => this.board.grid[y][x]?.tile
+                const t = (x, y) => this.board.grid[y][x]?.tile
 
                 /** Chip or stack from coords */
-                const cos = (x, y) => s(x, y) || c(x,y);
+                const cos = (x, y) => s(x, y) || c(x, y);
 
                 /** Tile or stack from coords */
-                const tos = (x, y) => s(x, y) || t(x,y)
+                const tos = (x, y) => s(x, y) || t(x, y)
 
-                
+
 
                 options.forEach((opt) => {
                     const [[fx, fy], [tx, ty]] = opt;
                     let from = cos(fx, fy),
                         to = tos(tx, ty),
-                        enemy=c(tx,ty)
+                        enemy = c(tx, ty)
 
                     //console.log('\nfrom', fx, fy, from?.constructor.name)
                     //console.log('to', tx, ty, to?.constructor.name)
                     //console.log('to contains enemy', enemy?.constructor.name)
 
                     this.once(from, (object) => {
-                        
+
                         const chip = object instanceof ChipStack ? object.getRandomChip() : object;
                         const onComplete = () => this.api.action(type, opt)
                         //console.log(fx,fy,tx,ty, 'chip:',chip.constructor.name, 'to:', to )
 
-                        if( enemy ){
-                            enemy.moveToStack( this.board.stacks[((player+1)%2)*2],true,onComplete, true  )
+                        if (enemy) {
+                            enemy.moveToStack(this.board.stacks[((player + 1) % 2) * 2], true, onComplete, true)
                         }
                         if (to instanceof ChipStack) {
                             chip.moveToStack(to, true, !enemy && onComplete)
@@ -238,6 +237,8 @@ class Main {
         /** Safety catch */
         this.stop()
 
+        
+
         /** Create renderer */
         this.renderer = new THREE.WebGLRenderer({ alpha: false });
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -257,8 +258,15 @@ class Main {
         document.addEventListener('pointermove', this.onPointerMove);
         document.addEventListener('pointerdown', this.onPointerDown);
 
-        /** Create and Start API link*/
-        this.api = new ApiLink(this.onData)
+        /** Create and init API*/
+        this.api = this.apiType === 'remote' ? 
+            new RemoteAPI(this.onData) : 
+            new LocalAPI(this.onData);
+        this.api.init();
+            
+            
+        
+        
 
         /** Start the renderloop */
         this.update()
@@ -268,10 +276,10 @@ class Main {
 
     /** Store & handle interactive objects */
     _interactiveObjectsOnce = []
-    get interactiveObjectsOnce(){
+    get interactiveObjectsOnce() {
         return this._interactiveObjectsOnce
     }
-    set interactiveObjectsOnce(objects){
+    set interactiveObjectsOnce(objects) {
         this._interactiveObjectsOnce = objects
         this.updateInteractionLights()
     }
@@ -279,8 +287,8 @@ class Main {
         this.interactiveObjectsOnce.push({ object, handler })
         this.updateInteractionLights()
     }
-    updateInteractionLights = debounce( () => {
-        this.lights.updateSpots(this.interactiveObjectsOnce.map(({object}) => object))
+    updateInteractionLights = debounce(() => {
+        this.lights.updateSpots(this.interactiveObjectsOnce.map(({ object }) => object))
     }, 50)
 
     /** Find and store objects under cursor */

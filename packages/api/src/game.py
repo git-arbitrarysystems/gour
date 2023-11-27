@@ -29,12 +29,12 @@ class TileType:
     START = "START"
     END = "END"
 
-TileTypeList = [
-    TileType.NORMAL,
-    TileType.DOUBLE,
-    TileType.START,
-    TileType.END
-]
+# TileTypeList = [
+#     TileType.NORMAL,
+#     TileType.DOUBLE,
+#     TileType.START,
+#     TileType.END
+# ]
 
 
 
@@ -48,14 +48,12 @@ class GameOfUr:
                  boards:Optional[List] = None,
                  dice:Optional[List[int]] = None,
                  available_moves:Optional[List[List[int]]] = None,
-                 coins_per_player:int = 7,
                  debug:bool = False
                  ):
         self.player = player
-        self.boards = [[coins_per_player] + [0]*15,[coins_per_player] + [0]*15] if boards == None else boards
+        self.boards = [[7] + [0]*15,[7] + [0]*15] if boards == None else boards
         self.dice = dice
         self.available_moves = available_moves
-        self.coins_per_player = coins_per_player
         self.debug = debug
 
 
@@ -81,9 +79,9 @@ class GameOfUr:
     
     # Is there a winner
     def get_winner(self):
-        if self.boards[0][15] == self.coins_per_player:
+        if self.boards[0][15] == 7:
             return 0
-        if self.boards[1][15] == self.coins_per_player:
+        if self.boards[1][15] == 7:
             return 1
         return None
     
@@ -100,7 +98,7 @@ class GameOfUr:
         # tile signature: [type, player, chipcount]
         for index, chips_on_tile in enumerate(top):
             top[index] = [
-                TileTypeList.index( TileType.START if index == 4 else TileType.END if index == 5 else TileType.DOUBLE if index == 0 or index == 6 else TileType.NORMAL),
+                TileType.START if index == 4 else TileType.END if index == 5 else TileType.DOUBLE if index == 0 or index == 6 else TileType.NORMAL,
                 0 if chips_on_tile else None,
                 chips_on_tile
             ]
@@ -108,14 +106,14 @@ class GameOfUr:
         for index, chips_on_tile in enumerate(middle):
             player_on_tile = 0 if chips_on_tile else 1 if middle_enemy[index] else None
             middle[index] = [
-                TileTypeList.index( TileType.DOUBLE if index == 3 else TileType.NORMAL),
+                TileType.DOUBLE if index == 3 else TileType.NORMAL,
                 player_on_tile,
                 1 if player_on_tile != None else 0
             ]
         
         for index, chips_on_tile in enumerate(bottom):
             bottom[index] = [
-                TileTypeList.index( TileType.START if index == 4 else TileType.END if index == 5 else TileType.DOUBLE if index == 0 or index == 6 else TileType.NORMAL),
+                TileType.START if index == 4 else TileType.END if index == 5 else TileType.DOUBLE if index == 0 or index == 6 else TileType.NORMAL,
                 1 if chips_on_tile else None,
                 chips_on_tile
             ]
@@ -131,9 +129,7 @@ class GameOfUr:
             board=self.get_board_as_tiles(),
             player=self.player,
             dice=self.dice,
-            winner=self.get_winner(),
-            chipCount=self.coins_per_player,
-            tiletypes=TileTypeList
+            winner=self.get_winner()            
         )
     
     def index_to_coordinates(self, index):
@@ -330,7 +326,7 @@ class GameOfUr:
 # Test drive
 #
 if __name__ == "__main__":
-    game = GameOfUr(debug=False, coins_per_player=7, player=0)
+    game = GameOfUr(debug=False, player=0)
     print( '', *game.get_board_as_tiles(), sep='\n' )
 
     
