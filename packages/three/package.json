@@ -18,12 +18,17 @@
     "three-mesh-bvh": "~0.6.8",
     "lodash": "~4.17.21",
     "screenfull": "~6.0.2",
-    "@mui/icons-material": "~5.14.18"
-    
+    "@mui/icons-material": "~5.14.18"    
+  },
+  "devDependencies": {
+    "rollup": "~4.6.0",
+    "@rollup/plugin-node-resolve": "~15.2.3",
+    "@rollup/plugin-commonjs": "~25.0.7"
   },
   "scripts": {
     "start": "CHOKIDAR_USEPOLLING=true  BROWSER=none react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "rollup":"rm -rf dist/ && rollup --config && cp src/components/game/demo.html dist/game/index.html"
    
   },
   "eslintConfig": {

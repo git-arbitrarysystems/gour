@@ -29,20 +29,22 @@ class LocalAPI {
     }
 
     /** Game defaults */
-    defaults = {
-        player: null,
-        board: Array(3).fill().map(
-            (n, y) => Array(8).fill().map(
-                (n, x) => [
-                    /** type, player, chipcount */
-                    this.getTileType(x, y),
-                    (y !== 1 && x === 4) ? y * 0.5 : null,
-                    (y !== 1 && x === 4) ? 7 : 0
-                ]
-            )
-        ),
-        action: { type: ActionTypes.UNKNOWN_ACTION },
-        dice: null
+    getDefaults(){
+        return {
+            player: null,
+            board: Array(3).fill().map(
+                (n, y) => Array(8).fill().map(
+                    (n, x) => [
+                        /** type, player, chipcount */
+                        this.getTileType(x, y),
+                        (y !== 1 && x === 4) ? y * 0.5 : null,
+                        (y !== 1 && x === 4) ? 7 : 0
+                    ]
+                )
+            ),
+            action: { type: ActionTypes.UNKNOWN_ACTION },
+            dice: null
+        }
     }
 
     /** Data listsner */
@@ -57,20 +59,23 @@ class LocalAPI {
 
     /** Store current data(localStorage) */
     store() {
-        Object.keys(this.defaults).forEach(key => {
+        const defaults = this.getDefaults()
+        Object.keys(defaults).forEach(key => {
             localStorage.setItem(key, JSON.stringify(this[`_${key}`]))
         })
     }
     /** Load from localStorage */
     load() {
-        Object.keys(this.defaults).forEach(key => {
-            this[`_${key}`] = JSON.parse(localStorage.getItem(key)) || this.defaults[key]
+        const defaults = this.getDefaults()
+        Object.keys(defaults).forEach(key => {
+            this[`_${key}`] = JSON.parse(localStorage.getItem(key)) || defaults[key]
         })
     }
     /** Update data */
     update() {
+        const defaults = this.getDefaults()
         this._action = this.getNextAction()
-        this.data = Object.keys(this.defaults).reduce((data, key) => {
+        this.data = Object.keys(defaults).reduce((data, key) => {
             return { ...data, [key]: this[`_${key}`] }
         }, {})
     }
@@ -168,14 +173,18 @@ class LocalAPI {
         this.update();
     }
     delete() {
-        Object.keys(this.defaults).forEach(key => {
+        const defaults = this.getDefaults()
+        Object.keys(defaults).forEach(key => {
             localStorage.removeItem(key)
         })
+
+        
         this.load()
         this.update();
+       
     }
     action(type, value) {
-        console.log('LocalAPI.action', { type, value })
+        //console.log('LocalAPI.action', { type, value })
 
         switch (type) {
             case ActionTypes.SELECT_PLAYER:

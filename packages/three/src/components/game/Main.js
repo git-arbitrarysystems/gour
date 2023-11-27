@@ -43,8 +43,8 @@ class Main {
             new THREE.MeshPhongMaterial({
                 color: 0xffffff,
                 //emissive:0x660066,
-                //shininess: 3,
-                //reflectivity:100
+                shininess: 300,
+                reflectivity:100
             })
         );
         plane.geometry.rotateX(Math.PI * 1.5)
@@ -97,6 +97,8 @@ class Main {
             return;
         }
 
+        this.interactiveObjectsOnce = []
+
         const { board, action, dice, player } = data
 
         /** Update the board */
@@ -124,7 +126,7 @@ class Main {
         if (dice) this.dice.roll(null, dice, 0, 0)
 
         const { type, options } = action
-        console.log(action, data)
+        //console.log(action, data)
 
         switch (type) {
             case 'SELECT_PLAYER':
@@ -281,10 +283,11 @@ class Main {
     }
     set interactiveObjectsOnce(objects) {
         this._interactiveObjectsOnce = objects
+        //console.log('_interactiveObjectsOnce', this._interactiveObjectsOnce.length)
         this.updateInteractionLights()
     }
     once(object, handler) {
-        this.interactiveObjectsOnce.push({ object, handler })
+        this.interactiveObjectsOnce = [...this.interactiveObjectsOnce, { object, handler }]
         this.updateInteractionLights()
     }
     updateInteractionLights = debounce(() => {
@@ -314,13 +317,15 @@ class Main {
         const self = this;
         this.objectsUnderPoint.forEach((intersect) => {
             const { object } = intersect;
-
             /** Remove eventlistener and exec */
             remove(self.interactiveObjectsOnce, (node) => {
-                return node.object === object || node.object.children.includes(object)
+                return node.object === object || node.object.children.includes(object) 
             }).forEach(({ handler }) => {
                 handler(object)
             })
+
+            
+
         });
         this.onPointerMove(event)
     }

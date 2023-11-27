@@ -22,20 +22,20 @@ class Lights extends THREE.Group {
 
 
         /** */
-        this.primarySport = new THREE.SpotLight(
+        this.primarySpot = new THREE.SpotLight(
             this.randomColor(), 3, 200,
             Math.PI*0.2, 0.5, 0
         )
-        this.primarySport.position.set(
-            dice.position.x+120, 
+        this.primarySpot.position.set(
+            dice.position.x, 
             100, 
-            dice.position.z
+            dice.position.z + 50
         )
-        this.primarySport.target = dice
-        this.add(this.primarySport)
+        this.primarySpot.target = dice
+        this.add(this.primarySpot)
 
-        Lights.castShadow(this.primarySport, true)
-        Lights.debug(this.primarySport, false)
+        Lights.castShadow(this.primarySpot, true)
+        Lights.debug(this.primarySpot, false)
 
         /** */
         this.secondarySpot = new THREE.SpotLight(
@@ -77,7 +77,7 @@ class Lights extends THREE.Group {
     all(spotsOnly){
         return [
             ...this.spots, 
-            this.primarySport, 
+            this.primarySpot, 
             this.secondarySpot, 
             this.tertiarySpot,
         ].concat( spotsOnly ? [] : [this.mainDirectionalLight])
@@ -92,7 +92,7 @@ class Lights extends THREE.Group {
 
             const to = {...hsl, h:Math.random()}
             new TWEEN.Tween(hsl)
-            .to(to, 5000)
+            .to(to, 2500)
             .easing(TWEEN.Easing.Cubic.InOut)
             .onUpdate( ({h, s, l}) => {
                 spot.color.setHSL(h,s,l)

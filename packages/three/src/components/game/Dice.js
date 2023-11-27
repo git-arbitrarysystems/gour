@@ -57,6 +57,10 @@ class Dice extends THREE.Mesh {
                     drawLeftTip: i === 1,
                     drawRightTip: i === 0
                 }),
+                //shininess:250,
+                //emissive:0xffffff,
+                //emissiveIntensity:0.01
+                specular:0x555555
                 //side: THREE.DoubleSide,
                 //transparent: true, opacity: 0.8
             })
