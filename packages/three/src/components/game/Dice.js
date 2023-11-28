@@ -133,7 +133,10 @@ Dice.renderCanvasTexture = function (options = {}) {
     }
 
     /** Create a canvas */
-    const canvas = new OffscreenCanvas(options.width, options.height)
+    // const canvas = new OffscreenCanvas(options.width, options.height)
+    const canvas = document.createElement('canvas')
+    canvas.setAttribute('width', options.width)
+    canvas.setAttribute('height', options.height)
 
     /** Specific implementations */
     const { width: w, height: h, tipSize, drawLeftTip, drawRightTip, drawTopTip, tipColor, fillColor } = options

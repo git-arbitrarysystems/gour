@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <title>The royal game of UR</title>
     <style>
         body{
             background-color: #000;
@@ -27,12 +28,18 @@
             border: none;
             pointer-events: all;
             background: transparent;
-            color: white;
+            
+            color: gray;
             cursor: pointer;
+            font-size: 1em;
+            color: white;
+            opacity: 0.3;
+            transition: opacity 0.25s;
         }
         #ui button:hover{
             background: transparent;
-            color: gray;
+            opacity: 1;
+            
         }
     </style>
     <body>
@@ -44,8 +51,10 @@
         </script>
 
         <div id="ui">
-            <button onclick="game.api.delete()">new</button>
-            <button onclick="game.lights.randomizeColors()">clrs</button>
+            <button title="new game" onclick="game.api.delete()">new</button>
+            <button title="random colors" onclick="game.lights.randomizeColors()">clr</button>
+            <button title="fullscreen" onclick="game.toggleFullScreen()">fs</button>
+            <a title="rules" href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur" target="_blank"><button>how</button></a>
         </div>
 
     </body>

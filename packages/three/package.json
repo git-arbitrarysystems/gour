@@ -28,7 +28,7 @@
   "scripts": {
     "start": "CHOKIDAR_USEPOLLING=true  BROWSER=none react-scripts start",
     "build": "react-scripts build",
-    "rollup":"rm -rf dist/ && rollup --config && cp src/components/game/demo.html dist/game/index.html"
+    "rollup":"rm -rf dist/ && rollup --config && cp src/components/game/demo.html dist/game/index.html && serve dist/game -p 8055"
    
   },
   "eslintConfig": {
