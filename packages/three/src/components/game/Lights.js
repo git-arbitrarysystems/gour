@@ -23,15 +23,15 @@ class Lights extends THREE.Group {
 
         /** */
         this.primarySpot = new THREE.SpotLight(
-            this.randomColor(), 3, 200,
+            this.randomColor(), 1, 200,
             Math.PI*0.2, 0.5, 0
         )
         this.primarySpot.position.set(
-            dice.position.x, 
+            board.position.x, 
             100, 
-            dice.position.z + 50
+            board.position.z + 50
         )
-        this.primarySpot.target = dice
+        this.primarySpot.target = board
         this.add(this.primarySpot)
 
         Lights.castShadow(this.primarySpot, true)
@@ -39,15 +39,15 @@ class Lights extends THREE.Group {
 
         /** */
         this.secondarySpot = new THREE.SpotLight(
-            this.randomColor(), 3, 200,
-            Math.PI*0.1, 0.25, 0
+            this.randomColor(), 1, 80,
+            Math.PI*0.21, 0.25, 0
         )
         this.secondarySpot.position.set(
-            board.position.x+120, 
-            50, 
-            board.position.z-80
+            dice.position.x+40, 
+            40, 
+            dice.position.z
         )
-        this.secondarySpot.target = board
+        this.secondarySpot.target = dice
         this.add(this.secondarySpot)
 
         Lights.castShadow(this.secondarySpot, true)
@@ -56,13 +56,13 @@ class Lights extends THREE.Group {
 
         /** */
         this.tertiarySpot = new THREE.SpotLight(
-            this.randomColor(), 3, 200,
+            this.randomColor(), 2, 200,
             Math.PI*0.1, 0.25, 0
         )
         this.tertiarySpot.position.set(
             board.position.x-120, 
             50, 
-            board.position.z0
+            board.position.z
         )
         this.tertiarySpot.target = board
         this.add(this.tertiarySpot)

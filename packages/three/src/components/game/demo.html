@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
     <title>The royal game of UR</title>
+    <meta charset="utf-8" />
+    <meta name=”apple-mobile-web-app-capable” content=”yes “>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
     <style>
         body{
             background-color: #000;
@@ -17,11 +21,11 @@
         #ui{
             position: absolute;
             left: 0;
-            bottom: 0;
+            top: 0;
             width: 100%;
-            text-align: center;
+            text-align: right;
             pointer-events: none;
-            padding:1em;
+            padding:0.5em;
             box-sizing: border-box;
         }
         #ui button{
@@ -31,13 +35,14 @@
             
             color: gray;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.9em;
             color: white;
-            opacity: 0.3;
+            background-color: #000;
+            opacity: 0.6;
             transition: opacity 0.25s;
         }
         #ui button:hover{
-            background: transparent;
+            background-color: #000;
             opacity: 1;
             
         }

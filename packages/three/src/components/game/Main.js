@@ -41,8 +41,8 @@ class Main {
         const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(120, 80),
             new THREE.MeshPhongMaterial({
-                color: 0xffffff,
-                //emissive:0x660066,
+                color: 0xbbbbbb,
+                emissive:0x220044,
                 shininess: 300,
                 reflectivity:100
             })

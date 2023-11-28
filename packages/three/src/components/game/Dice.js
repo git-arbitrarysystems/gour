@@ -60,7 +60,7 @@ class Dice extends THREE.Mesh {
                 //shininess:250,
                 //emissive:0xffffff,
                 //emissiveIntensity:0.01
-                specular:0x555555
+                specular:0x552222
                 //side: THREE.DoubleSide,
                 //transparent: true, opacity: 0.8
             })
@@ -128,7 +128,7 @@ Dice.renderCanvasTexture = function (options = {}) {
             height: 200,
             tipSize: 50,
             tipColor: '#ffffff',
-            fillColor: '#111111'
+            fillColor: '#000000'
         }), ...options
     }
 
