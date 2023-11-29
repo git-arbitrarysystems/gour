@@ -432,6 +432,10 @@
       {
         "packageName": "frontend",
         "projectFolder": "packages/frontend"
+      },
+      {
+        "packageName": "headless",
+        "projectFolder": "packages/headless"
       }
   ]
 }
