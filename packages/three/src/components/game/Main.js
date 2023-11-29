@@ -9,7 +9,7 @@ import { Lights } from './Lights';
 import { debounce, remove } from 'lodash';
 import { ChipStack } from './ChipStack';
 import { Tile } from './Tile';
-import { LocalAPI } from './LocalAPI';
+import { ActionTypes, LocalAPI } from './LocalAPI';
 import { RemoteAPI } from './RemoteAPI';
 
 
@@ -42,9 +42,9 @@ class Main {
             new THREE.PlaneGeometry(120, 80),
             new THREE.MeshPhongMaterial({
                 color: 0xbbbbbb,
-                emissive:0x220044,
+                emissive: 0x220044,
                 shininess: 300,
-                reflectivity:100
+                reflectivity: 100
             })
         );
         plane.geometry.rotateX(Math.PI * 1.5)
@@ -125,19 +125,29 @@ class Main {
         /** Update dice */
         if (dice) this.dice.roll(null, dice, 0, 0)
 
-        const { type, options } = action
-        //console.log(action, data)
+        const { type, options, agent } = action
+        const computerMoveDelay = 50
+        console.log(action, data)
 
         switch (type) {
             case 'SELECT_PLAYER':
                 this.api.action(type, 'RAND')
                 break;
             case 'ROLL_DICE':
-                this.once(this.dice, () => this.dice.roll(
+
+                const act = () => this.dice.roll(
                     value => this.api.action(type, value)
-                ))
+                )
+
+                if (agent === "COMPUTER") {
+                    setTimeout(act, computerMoveDelay)
+                } else {
+                    this.once(this.dice, act)
+                }
+
                 break;
             case 'MOVE':
+
 
                 /** Stack from coords */
                 const s = (x, y) => {
@@ -155,19 +165,13 @@ class Main {
                 /** Tile or stack from coords */
                 const tos = (x, y) => s(x, y) || t(x, y)
 
+                const getActionFn = opt => {
 
-
-                options.forEach((opt) => {
-                    const [[fx, fy], [tx, ty]] = opt;
-                    let from = cos(fx, fy),
-                        to = tos(tx, ty),
+                    const [, [tx, ty]] = opt;
+                    const to = tos(tx, ty),
                         enemy = c(tx, ty)
 
-                    //console.log('\nfrom', fx, fy, from?.constructor.name)
-                    //console.log('to', tx, ty, to?.constructor.name)
-                    //console.log('to contains enemy', enemy?.constructor.name)
-
-                    this.once(from, (object) => {
+                    return (object) => {
 
                         const chip = object instanceof ChipStack ? object.getRandomChip() : object;
                         const onComplete = () => this.api.action(type, opt)
@@ -182,12 +186,48 @@ class Main {
                             chip.moveToTile(this.board, tx, ty, true, !enemy && onComplete)
                         }
                         this.interactiveObjectsOnce = []
+                    }
+
+                }
+                let actionFn;
+                if (agent === 'COMPUTER') {
+                    const best = this.api.action(ActionTypes.SELECT_BEST_MOVE, options)
+                    const [[fx, fy]] = best;
+                    actionFn = () => {
+                        const obj = cos(fx, fy)
+                        getActionFn(best)(obj)
+                    }
+                    setTimeout(actionFn, computerMoveDelay)
+
+                } else {
+                    options.forEach((opt) => {
+
+                        const [[fx, fy]] = opt;
+                        const from = cos(fx, fy),
+                            actionFn = getActionFn(opt)
+
+
+                        //console.log('\nfrom', fx, fy, from?.constructor.name)
+                        //console.log('to', tx, ty, to?.constructor.name)
+                        //console.log('to contains enemy', enemy?.constructor.name)
+
+                        this.once(from, actionFn)
                     })
-                })
+                }
+
+
+
+
+
 
                 break;
             case 'NO_MOVES_AVAILABLE':
-                this.api.action(type);
+                if (agent === "COMPUTER") {
+                    setTimeout(() => this.api.action(type), computerMoveDelay)
+                } else {
+                    this.api.action(type);
+                }
+
                 break;
 
             default:
@@ -239,7 +279,7 @@ class Main {
         /** Safety catch */
         this.stop()
 
-        
+
 
         /** Create renderer */
         this.renderer = new THREE.WebGLRenderer({ alpha: false });
@@ -263,14 +303,14 @@ class Main {
         document.addEventListener('tap', this.onPointerDown);
 
         /** Create and init API*/
-        this.api = this.apiType === 'remote' ? 
-            new RemoteAPI(this.onData) : 
+        this.api = this.apiType === 'remote' ?
+            new RemoteAPI(this.onData) :
             new LocalAPI(this.onData);
         this.api.init();
-            
-            
-        
-        
+
+
+
+
 
         /** Start the renderloop */
         this.update()
@@ -321,12 +361,12 @@ class Main {
             const { object } = intersect;
             /** Remove eventlistener and exec */
             remove(self.interactiveObjectsOnce, (node) => {
-                return node.object === object || node.object.children.includes(object) 
+                return node.object === object || node.object.children.includes(object)
             }).forEach(({ handler }) => {
                 handler(object)
             })
 
-            
+
 
         });
         this.onPointerMove(event)
@@ -360,7 +400,7 @@ class Main {
         }
     }
 
-    toggleFullScreen(){
+    toggleFullScreen() {
         screenfull.toggle(this.container)
     }
 }
