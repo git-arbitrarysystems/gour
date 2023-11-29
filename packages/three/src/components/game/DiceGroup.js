@@ -40,14 +40,15 @@ class DiceGroup extends THREE.Mesh {
             dice.roll(
                 value,
                 duration - Math.round(Math.random() * variation),
-                3 + Math.random() * 2
+                3 + Math.random() * 2,
+                i === 0 ? () => onComplete(values) : undefined
             )
             return value
         })
 
-        if (onComplete) setTimeout(() => {
-            onComplete(values)
-        }, duration)
+        // if (onComplete) setTimeout(() => {
+        //     onComplete(values)
+        // }, duration)
 
     }
 }

@@ -2,6 +2,7 @@
   "name": "gour.three",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     
     "react": "^18.2.0",
@@ -28,8 +29,7 @@
   "scripts": {
     "start": "CHOKIDAR_USEPOLLING=true  BROWSER=none react-scripts start",
     "build": "react-scripts build",
-    "rollup":"rm -rf dist/ && rollup --config && cp src/components/game/demo.html dist/game/index.html && serve dist/game -p 8055"
-   
+    "publish":"react-scripts build && rm -rf ~/Projects/arbitrary-systems/html/arbitrarysystems/modules/app/gour/site/ && cp -r ./build ~/Projects/arbitrary-systems/html/arbitrarysystems/modules/app/gour/site/"   
   },
   "eslintConfig": {
     "extends": [

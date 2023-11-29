@@ -1,4 +1,0 @@
-uvicorn[standard]
-fastapi
-fastapi-sessions
-pydantic

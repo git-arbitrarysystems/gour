@@ -1,13 +1,13 @@
 import FullscreenIcon from "@mui/icons-material/Fullscreen"
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { Box,  IconButton } from "@mui/material"
-import { useState } from "react";
+import { Box, Button, IconButton,  MenuItem, Select, Tooltip } from "@mui/material"
+import { useEffect, useState } from "react";
 import screenfull from 'screenfull';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
 
 const positionAbsolute = { position: 'absolute', left: 0, top: 0, bottom: 0, right: 0 }
 const eventsPassThrough = { pointerEvents: 'none', '& > *': { pointerEvents: 'auto' } }
-const iconButton = { color: '#fff', opacity: 0.5, '&:hover': { opacity: 1, transition: 'opacity 0.25s' } }
+
 
 const UI = props => {
     const { game } = props;
@@ -20,21 +20,67 @@ const UI = props => {
     }
 
 
+
+
+
+
+    /** format mode label */
+    const modeLabel = mode => mode?.join(' vs ').toLowerCase()
+    const [modeIndex, setModeIndex] = useState(0)
+    useEffect( () => {
+        if( game ){
+            const index = game.api.modes.map( m => m.join('-')).indexOf(
+                game.api.mode.join('-')
+            )
+            setModeIndex(index)
+        }
+    }, [game])
+    useEffect( () => {
+        if( game ){
+            game.api.mode = game.api.modes[modeIndex]
+        }
+    }, [game, modeIndex])
+
+
+    if (!game?.api) return null
+
     return <Box sx={{ ...positionAbsolute, ...eventsPassThrough }}>
-        <Box sx={{ display: 'flex', p: 1, ...eventsPassThrough }}>
+        <Box sx={{ display: 'flex', flexWrap:'wrap', gap: {xs:1, md:2},alignItems: 'center', p: {xs:1, md:2}, ...eventsPassThrough }}>
 
 
-            <IconButton title="Start a new game" size="small" sx={{ ...iconButton, ml: 'auto' }} onClick={() => {
+            <Button variant="contained" onClick={() => {
                 const userResponse = window.confirm('This will delete the current game. Are you sure?')
                 if (userResponse) game?.api.delete()
             }}>
-                <DeleteForeverIcon />
-            </IconButton>
+                new game
+            </Button>
+
+          
+
+            <Select size="small"
+                onChange={(e) => setModeIndex(e.target.value)}
+                value={modeIndex}//modeLabel(game.api.mode)}
+                label={modeLabel(game.api.modes[modeIndex])}
+            >
+                {game.api.modes.map((mode, index) => {
+                    return <MenuItem
+                        value={index}
+                        key={`mode-${index}`}                    >
+                        {modeLabel(mode)}
+                    </MenuItem>
+                })}
+            </Select>
+
+            <Button variant="contained" href="https://en.wikipedia.org/wiki/Royal_Game_of_Ur" target="_blank">how to play</Button>
+
+
 
             {screenfull.isEnabled &&
-                <IconButton title="Toggle fullscreen" size="small" sx={{ ...iconButton }} onClick={() => screenfull.toggle(document.body)}>
+            <Tooltip title="Toggle fullscreen">
+                <IconButton sx={{ml:'auto'}} onClick={() => screenfull.toggle(document.body)}>
                     {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
                 </IconButton>
+                </Tooltip>
             }
         </Box>
     </Box>

@@ -79,7 +79,7 @@ class Dice extends THREE.Mesh {
 
 
 
-    roll(value = 0, duration = 1000, height = 3) {
+    roll(value = 0, duration = 1000, height = 3, onComplete) {
 
         if( this.value === value && duration === 0 ) return; 
         this.value = value;
@@ -104,7 +104,7 @@ class Dice extends THREE.Mesh {
 
         /** Create roll tween instance */
         const updateRotation = ([x, y, z]) => this.rotation.set(x, y, z)
-        const rotation = new TWEEN.Tween(rotationFrom).to(rotationTo, duration).easing(TWEEN.Easing.Quadratic.Out).onUpdate(updateRotation);
+        const rotation = new TWEEN.Tween(rotationFrom).to(rotationTo, duration).easing(TWEEN.Easing.Quadratic.Out).onUpdate(updateRotation).onComplete(onComplete);
         rotation.start()
 
         /** Jump animation*/

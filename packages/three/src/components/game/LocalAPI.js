@@ -1,4 +1,6 @@
-import { isEqual } from "lodash";
+import {  isEqual } from "lodash";
+import { AI } from "./AI";
+import * as TWEEN from '@tweenjs/tween.js'
 
 const TileTypes = {
     NORMAL: "NORMAL",
@@ -14,40 +16,21 @@ const ActionTypes = {
     ROLL_DICE: "ROLL_DICE",
     MOVE: "MOVE",
     NO_MOVES_AVAILABLE: "NO_MOVES_AVAILABLE",
-    SELECT_BEST_MOVE:"SELECT_BEST_MOVE"
+    SELECT_BEST_MOVE: "SELECT_BEST_MOVE"
 }
 
-const AiTypes = {
-    FIRST:"FIRST",
-    RANDOM:"RANDOM",
-    LEVEL1:"LEVEL1"
+const PlayerTypes = {
+    HUMAN: "HUMAN",
+    COMPUTER: 'COMPUTER'
 }
 
-const AiScores = {
-    ON_DOUBLE:10,
-    FREE_DOUBLE:4,
-    
-    ON_CENTER:20,
-    VACATE_CENTER:-10,
-
-    TAKE_OPPONENT:10,
-    
-    FINISH:3,
-    REACH_SAFE_ZONE:5,
-    ENEMY_BEHIND:-5,
-    ENEMY_IS_BEHIND:2,
-
-    NO_ENEMY_BEHIND:2,
-    DISTANCE_BONUS:10
-
-}   
 
 
 
 
 class LocalAPI {
     constructor(onDataChange) {
-        this.aiType = AiTypes.LEVEL1
+        this.ai = new AI(this, AI.types.SMART)
         this.onDataChange = onDataChange;
     }
 
@@ -55,8 +38,26 @@ class LocalAPI {
         this.create()
     }
 
+
+    /** valid play-modes */
+    modes = [
+        [PlayerTypes.HUMAN, PlayerTypes.HUMAN],
+        [PlayerTypes.HUMAN, PlayerTypes.COMPUTER],
+        [PlayerTypes.COMPUTER, PlayerTypes.COMPUTER]
+    ]
+    set mode(mode){
+        this._mode = mode;
+        TWEEN.removeAll()
+        this.store()      
+    }
+    get mode(){
+        return this._mode
+    }
+    
+
+
     /** Game defaults */
-    getDefaults(){
+    getDefaults() {
         return {
             player: null,
             board: Array(3).fill().map(
@@ -70,7 +71,8 @@ class LocalAPI {
                 )
             ),
             action: { type: ActionTypes.UNKNOWN_ACTION },
-            dice: null
+            dice: null,
+            mode: [PlayerTypes.HUMAN,PlayerTypes.HUMAN]
         }
     }
 
@@ -82,6 +84,8 @@ class LocalAPI {
             if (this.onDataChange) this.onDataChange(data)
         }
     }
+
+ 
 
 
     /** Store current data(localStorage) */
@@ -108,6 +112,10 @@ class LocalAPI {
     }
 
 
+    
+
+
+
     /** get tiletype from coordinates */
     getTileType(x, y) {
         if (y === 1) {
@@ -120,14 +128,13 @@ class LocalAPI {
         return TileTypes.NORMAL
     }
 
-    
     coordinatesToIndex(x, y) {
         if (y === 1) return 5 + x;
         if (x < 5) return 4 - x;
         return 20 - x
     }
     indexToCoordinates(i, p) {
-        if( i < 0 || i > 15 ) return // Invalid index 
+        if (i < 0 || i > 15) return // Invalid index 
         if (i < 5) return [4 - i, p * 2]
         if (i > 12) return [20 - i, p * 2]
         return [i - 5, 1]
@@ -162,7 +169,7 @@ class LocalAPI {
         /** Validate moves */
         moves = moves.filter(move => {
             const [, target] = move;
-            if( !target ) return false;
+            if (!target) return false;
             const [tx, ty] = target;
             const [type, player, chips] = this._board[ty][tx];
             if (type === TileTypes.DOUBLE && chips) return false;
@@ -170,23 +177,27 @@ class LocalAPI {
             return true
         })
 
-        if( moves.length > 0 ) return moves
+        if (moves.length > 0) return moves
 
     }
 
+
+
     getNextAction() {
-        const action = { 
-            type: ActionTypes.UNKNOWN_ACTION, 
+
+     
+        
+        const action = {
+            type: ActionTypes.UNKNOWN_ACTION,
             options: [],
-            agent:this._player === 1 ? 'COMPUTER' : 'PLAYER',
-            //agent:"COMPUTER"
+            agent: this._mode[this._player],
         }
-        if( this._board[0][5][2] === 7 || this._board[2][5][2] === 7 ){
+        if (this._board[0][5][2] === 7 || this._board[2][5][2] === 7) {
             /** Game is finished */
-        }else if (this._player === null) {
+        } else if (this._player === null) {
             action.type = ActionTypes.SELECT_PLAYER
             action.options = ['RAND', 0, 1]
-        }else if (this._dice === null) {
+        } else if (this._dice === null) {
             action.type = ActionTypes.ROLL_DICE
         } else {
             const availableMoves = this.getAvailableMoves()
@@ -201,127 +212,6 @@ class LocalAPI {
         return action
     }
 
-    /** Select computers move */
-    getComputerMove(options){
-
-        /** Helpers */
-        const tileContainsEnemy = (x,y) => {
-            const tileData = this.data.board[y][x]
-            const [ ,player, chips] = tileData;
-            if( chips && player !== this.data.player ) return true;
-        }
-        const enemyBehindScore = (x,y) => {
-            const index = this.coordinatesToIndex(x,y)
-            if( y !== 1 ) return 0;
-
-            let score = 0;
-            [1,2,3,4].forEach( steps => {
-                if( index - steps > 0 ){
-                    const [rx,ry] = this.indexToCoordinates(index-steps, (this.data.player+1)%2)
-                    const containsEnemy =  tileContainsEnemy(rx,ry);
-                    if( containsEnemy ){
-                        console.log(rx, ry, 'containsEnemy')
-                        score += 1 - Math.abs(2-steps)/3
-                    }
-                }
-                
-            })
-            return score
-        }
-
-        if( this.aiType === AiTypes.FIRST){
-            return options[0]
-        }else if( this.aiType === AiTypes.LAST){
-            return options[ options.length-1]
-        }else if( this.aiType === AiTypes.LEVEL1){
-
-            const scoredOptions = []
-            let highScore = Number.NEGATIVE_INFINITY;
-            
-            let _log = ``
-            const log = str => _log = `${_log}\n${str}`
-            log('REPORT')
-
-            options.forEach( (opt, i) => {
-                let score = 0;
-                const [[fx, fy], [tx, ty]] = opt;
-
-                const sourceType = this.getTileType(fx, fy)
-                const targetType = this.getTileType(tx, ty)
-
-                log(`${i}: from ${fx}, ${fy} to ${tx},${ty}:`)
-               
-                 /** Analyse source */
-                 if( sourceType === TileTypes.DOUBLE  ){ 
-                    score += AiScores.FREE_DOUBLE
-                    log('FREE_DOUBLE ' + AiScores.FREE_DOUBLE)
-                }
-                 if( sourceType === TileTypes.DOUBLE && fy === 1){ 
-                    score += AiScores.VACATE_CENTER
-                    log('VACATE_CENTER ' + AiScores.FREE_DOUBLE)
-                }
-                const enemyIsBehindScore = enemyBehindScore(fx, fy)
-                if( enemyIsBehindScore ){
-                    score +=  enemyIsBehindScore * AiScores.ENEMY_IS_BEHIND
-                    log(`ENEMY_IS_BEHIND ${enemyIsBehindScore} * ${AiScores.ENEMY_IS_BEHIND}`)
-                }
-                
-
-                /** Analyse target */
-                if( targetType === TileTypes.DOUBLE ){
-                     score += AiScores.ON_DOUBLE;
-                     log('ON_DOUBLE ' + AiScores.ON_DOUBLE)
-                }
-                if( targetType === TileTypes.DOUBLE && ty === 1 ){ 
-                    score += AiScores.ON_CENTER;
-                    log('ON_CENTER ' +  AiScores.ON_CENTER)
-                }
-                if( targetType === TileTypes.END ){
-                     score += AiScores.FINISH
-                     log('FINISH ' +  AiScores.FINISH)
-                }
-                if( tileContainsEnemy(tx,ty) ){
-                     score += AiScores.TAKE_OPPONENT
-                     log('TAKE_OPPONENT ' +  AiScores.TAKE_OPPONENT)
-                
-                    }
-                if( ty !== 1 && tx > 4 ){
-                     score += AiScores.REACH_SAFE_ZONE
-                     log('REACH_SAFE_ZONE ' +  AiScores.REACH_SAFE_ZONE)
-                }
-                const enemyWillBeBehindScore = enemyBehindScore(tx,ty)
-                if( enemyWillBeBehindScore ){
-                    score += enemyWillBeBehindScore * AiScores.ENEMY_BEHIND
-                    log(`ENEMY_WILL_BE_BEHIND ${enemyWillBeBehindScore} * ${AiScores.ENEMY_BEHIND}`)
-                }else{
-                    score += AiScores.NO_ENEMY_BEHIND
-                    log(`NO_ENEMY_BEHIND ${AiScores.NO_ENEMY_BEHIND}`)
-                }
-
-                score += AiScores.DISTANCE_BONUS * this.coordinatesToIndex(tx, ty)/16
-                log(`DISTANCE_BONUS ${this.coordinatesToIndex(tx, ty)/16} * ${AiScores.DISTANCE_BONUS}`)
-
-               
-                log('final score:' + score )
-                log('')
-
-
-                highScore = Math.max(score, highScore)
-                scoredOptions.push( {opt, score})
-            })
-            const best = scoredOptions.filter( ({score}) => score >= highScore)
-            console.log(_log)
-            console.log({highScore, best, scoredOptions})
-            
-            return best[ Math.floor(best.length * Math.random()) ].opt
-
-        }
-
-        /** Defaults to RANDOM */
-        return options[Math.floor(Math.random() * options.length)]
-        
-    }
-
     /** Core */
     create() {
         this.load();
@@ -330,21 +220,20 @@ class LocalAPI {
     delete() {
         const defaults = this.getDefaults()
         Object.keys(defaults).forEach(key => {
-            localStorage.removeItem(key)
+            if( key !== 'mode' ) localStorage.removeItem(key)
         })
 
-        
+
         this.load()
         this.update();
-       
+
     }
     action(type, value) {
         //console.log('LocalAPI.action', { type, value })
 
         switch (type) {
             case ActionTypes.SELECT_BEST_MOVE:
-
-                return this.getComputerMove(value)
+                return this.ai.getBestOption(value)
             case ActionTypes.SELECT_PLAYER:
                 this._player = typeof value === 'number' ?
                     value : Math.round(Math.random())
@@ -391,4 +280,4 @@ class LocalAPI {
 
 }
 
-export { LocalAPI, ActionTypes }
+export { LocalAPI, ActionTypes, TileTypes, PlayerTypes }

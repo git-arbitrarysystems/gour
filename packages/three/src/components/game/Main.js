@@ -80,14 +80,26 @@ class Main {
         controls.zoomSpeed = 3
         controls.update();
 
-        /** Register interactive objects */
-        //this.appendInteractiveObjects([dice, board])
-
         /** Public  */
         this.public({ dice, scene, camera, board, lights })
 
-
     }
+
+
+
+    /** Delayed responses */
+    computerMoveDelay= 500
+    _timeouts = []
+    get timeouts(){
+        return this._timeouts
+    }
+    set timeouts(timeouts){
+        this._timeouts.forEach( timeout => {
+            clearTimeout(timeout)
+        })
+        this._timeouts = timeouts
+    }
+
 
     onData(data) {
 
@@ -98,6 +110,8 @@ class Main {
         }
 
         this.interactiveObjectsOnce = []
+        this.timeouts = []
+        
 
         const { board, action, dice, player } = data
 
@@ -110,7 +124,6 @@ class Main {
                     stack.init(chips)
                 } else {
                     const chip = this.board.grid[y][x].chip
-                    //console.log(x,y,{chips})
                     if (chips && !chip) {
                         const chip = new Chip(this.board.chipWidth, this.board.chipHeight, this.board.colors[player])
                         chip.moveToTile(this.board, x, y)
@@ -126,8 +139,8 @@ class Main {
         if (dice) this.dice.roll(null, dice, 0, 0)
 
         const { type, options, agent } = action
-        const computerMoveDelay = 50
-        console.log(action, data)
+        
+        //console.log(action, data)
 
         switch (type) {
             case 'SELECT_PLAYER':
@@ -140,7 +153,9 @@ class Main {
                 )
 
                 if (agent === "COMPUTER") {
-                    setTimeout(act, computerMoveDelay)
+                    this._timeouts.push(
+                        setTimeout(act, this.computerMoveDelay)
+                    )
                 } else {
                     this.once(this.dice, act)
                 }
@@ -197,41 +212,32 @@ class Main {
                         const obj = cos(fx, fy)
                         getActionFn(best)(obj)
                     }
-                    setTimeout(actionFn, computerMoveDelay)
-
+                    this._timeouts.push(
+                        setTimeout(actionFn, this.computerMoveDelay)
+                    )
                 } else {
                     options.forEach((opt) => {
-
                         const [[fx, fy]] = opt;
                         const from = cos(fx, fy),
                             actionFn = getActionFn(opt)
-
-
-                        //console.log('\nfrom', fx, fy, from?.constructor.name)
-                        //console.log('to', tx, ty, to?.constructor.name)
-                        //console.log('to contains enemy', enemy?.constructor.name)
-
                         this.once(from, actionFn)
                     })
                 }
 
-
-
-
-
-
                 break;
             case 'NO_MOVES_AVAILABLE':
                 if (agent === "COMPUTER") {
-                    setTimeout(() => this.api.action(type), computerMoveDelay)
+                    this._timeouts.push(
+                        setTimeout(() => this.api.action(type), this.computerMoveDelay)
+                    )
                 } else {
                     this.api.action(type);
                 }
 
                 break;
-
             default:
                 console.log('unhandled action', action)
+                
                 break;
         }
 
