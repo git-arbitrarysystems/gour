@@ -1,7 +1,6 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@babel/plugin-transform-private-property-in-object': ~7.23.4
   '@emotion/react': ~11.11.1
   '@emotion/styled': ~11.11.0
   '@mui/icons-material': ~5.14.18
@@ -22,7 +21,6 @@ specifiers:
   three-mesh-bvh: ~0.6.8
 
 dependencies:
-  '@babel/plugin-transform-private-property-in-object': 7.23.4
   '@emotion/react': 11.11.1_react@18.2.0
   '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
   '@mui/icons-material': 5.14.18_807efefdc5fb191818188352f936f136
@@ -502,6 +500,19 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.23.3
+    dev: false
+
+  /@babel/plugin-proposal-private-property-in-object/7.21.11:
+    resolution: {integrity: sha512-0QZ8qP/3RLDVBwBFoWAwCtgcDZJVwA5LUJRZU8x2YFfKNuFq161wK3cuGrALu5yiPu+vzwTAg/sMWVNeWeNyaw==}
+    engines: {node: '>=6.9.0'}
+    deprecated: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-property-in-object instead.
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/helper-annotate-as-pure': 7.22.5
+      '@babel/helper-create-class-features-plugin': 7.22.15
+      '@babel/helper-plugin-utils': 7.22.5
+      '@babel/plugin-syntax-private-property-in-object': 7.14.5
     dev: false
 
   /@babel/plugin-syntax-async-generators/7.8.4_@babel+core@7.23.3:
@@ -10901,10 +10912,11 @@ packages:
     dev: false
 
   file:projects/frontend.tgz:
-    resolution: {integrity: sha512-q2snw1I153vZdKApC7bEPkAf/lI9rUwondhawonye04c2yGfMoa7A870BQKKvAFpWIGmRNTR1RJza0PcEDhU3A==, tarball: file:projects/frontend.tgz}
+    resolution: {integrity: sha512-SISBLw+jBKvAvrByksHbyZBGV7vdG2CS+1KCijZ7YM9POhb2VQfays2pHQNi0t8vG+KlNEa1tTEAwR+0t32S1Q==, tarball: file:projects/frontend.tgz}
     name: '@rush-temp/frontend'
     version: 0.0.0
     dependencies:
+      '@babel/plugin-proposal-private-property-in-object': 7.21.11
       '@babel/plugin-transform-private-property-in-object': 7.23.4
       '@emotion/react': 11.11.1_react@18.2.0
       '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1

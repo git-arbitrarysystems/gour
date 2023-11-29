@@ -9,7 +9,8 @@ import { Lights } from './Lights';
 import { debounce, remove } from 'lodash';
 import { ChipStack } from './ChipStack';
 import { Tile } from './Tile';
-import { ActionTypes, API } from './API';
+import {  API } from './API';
+import { ActionTypes } from './models';
 
 
 class Main {

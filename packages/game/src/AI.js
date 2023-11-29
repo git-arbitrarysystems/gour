@@ -1,4 +1,4 @@
-import { TileTypes } from "./API";
+import { TileTypes } from "./models";
 
 class AI{
     constructor(api, type = AI.types.RANDOM ){

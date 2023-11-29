@@ -9,10 +9,10 @@
     "@mui/material": "~5.14.17",
     "@emotion/react": "~11.11.1",
     "@emotion/styled": "~11.11.0",
-    "@babel/plugin-transform-private-property-in-object": "~7.23.4",
     "screenfull": "~6.0.2",
     "@mui/icons-material": "~5.14.18",
-    "gour": "~1.0.0"    
+    "gour": "~1.0.0",
+    "@babel/plugin-proposal-private-property-in-object": "~7.21.11"    
   },
   "devDependencies": {
     "rollup": "~4.6.0",

@@ -1,3 +1,6 @@
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+
 export default {
 	input: 'src/index.js',
 	output: [
@@ -8,5 +11,6 @@ export default {
 		{
 			file: 'dist/index-es.js',
 			format: 'es'
-		}]
+		}],
+	plugins: [commonjs(), nodeResolve()]
 };
