@@ -1,6 +1,5 @@
-import './App.css';
 import {  CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import GameContainer from './components/GameContainer';
+import GameContainer from './GameContainer';
 
 const theme = createTheme({
   palette:{

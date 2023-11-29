@@ -6,12 +6,11 @@ specifiers:
   '@emotion/styled': ~11.11.0
   '@mui/icons-material': ~5.14.18
   '@mui/material': ~5.14.17
+  '@rollup/plugin-commonjs': ~25.0.7
   '@rollup/plugin-node-resolve': ~15.2.3
-  '@rush-temp/gour.api': file:./projects/gour.api.tgz
-  '@rush-temp/gour.frontend': file:./projects/gour.frontend.tgz
-  '@rush-temp/gour.three': file:./projects/gour.three.tgz
+  '@rush-temp/frontend': file:./projects/frontend.tgz
+  '@rush-temp/gour': file:./projects/gour.tgz
   '@tweenjs/tween.js': ~21.0.0
-  http-proxy-middleware: ~2.0.6
   lodash: ~4.17.21
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -28,12 +27,11 @@ dependencies:
   '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
   '@mui/icons-material': 5.14.18_807efefdc5fb191818188352f936f136
   '@mui/material': 5.14.18_aa3274991927adc2766d9259998fdd18
+  '@rollup/plugin-commonjs': 25.0.7_rollup@4.6.0
   '@rollup/plugin-node-resolve': 15.2.3_rollup@4.6.0
-  '@rush-temp/gour.api': file:projects/gour.api.tgz
-  '@rush-temp/gour.frontend': file:projects/gour.frontend.tgz
-  '@rush-temp/gour.three': file:projects/gour.three.tgz
+  '@rush-temp/frontend': file:projects/frontend.tgz
+  '@rush-temp/gour': file:projects/gour.tgz
   '@tweenjs/tween.js': 21.0.0
-  http-proxy-middleware: 2.0.6
   lodash: 4.17.21
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -3317,6 +3315,7 @@ packages:
 
   /abab/2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
+    deprecated: Use your platform's native atob() and btoa() methods instead
     dev: false
 
   /accepts/1.3.8:
@@ -4731,6 +4730,7 @@ packages:
   /domexception/2.0.1:
     resolution: {integrity: sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg==}
     engines: {node: '>=8'}
+    deprecated: Use your platform's native DOMException instead
     dependencies:
       webidl-conversions: 5.0.0
     dev: false
@@ -10900,26 +10900,23 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  file:projects/gour.api.tgz:
-    resolution: {integrity: sha512-E8O6a7IamcJJHMDKK6pP6JJi9ebfAMqzJB66ViyWPLuh0IyuyWLsCDrHpZuDaH3u8yvaJHu3z5ZnPbeotB87pA==, tarball: file:projects/gour.api.tgz}
-    name: '@rush-temp/gour.api'
-    version: 0.0.0
-    dev: false
-
-  file:projects/gour.frontend.tgz:
-    resolution: {integrity: sha512-OllHsFqjkCCYFhS4P3/7wsZSCdhOt4xml3DqVp89c12syOkSyZIjjaHVmBhOs7Mop88B5oQmZFrAJSnd85yRjg==, tarball: file:projects/gour.frontend.tgz}
-    name: '@rush-temp/gour.frontend'
+  file:projects/frontend.tgz:
+    resolution: {integrity: sha512-q2snw1I153vZdKApC7bEPkAf/lI9rUwondhawonye04c2yGfMoa7A870BQKKvAFpWIGmRNTR1RJza0PcEDhU3A==, tarball: file:projects/frontend.tgz}
+    name: '@rush-temp/frontend'
     version: 0.0.0
     dependencies:
       '@babel/plugin-transform-private-property-in-object': 7.23.4
       '@emotion/react': 11.11.1_react@18.2.0
       '@emotion/styled': 11.11.0_bbbb3f1791c074daa4d64e8574bad1c1
+      '@mui/icons-material': 5.14.18_807efefdc5fb191818188352f936f136
       '@mui/material': 5.14.18_aa3274991927adc2766d9259998fdd18
-      http-proxy-middleware: 2.0.6
+      '@rollup/plugin-commonjs': 25.0.7_rollup@4.6.0
+      '@rollup/plugin-node-resolve': 15.2.3_rollup@4.6.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-scripts: 5.0.1_react@18.2.0
-      three: 0.158.0
+      rollup: 4.6.0
+      screenfull: 6.0.2
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/plugin-syntax-flow'
@@ -10927,7 +10924,6 @@ packages:
       - '@parcel/css'
       - '@swc/core'
       - '@types/babel__core'
-      - '@types/express'
       - '@types/react'
       - '@types/webpack'
       - bufferutil
@@ -10956,9 +10952,9 @@ packages:
       - webpack-plugin-serve
     dev: false
 
-  file:projects/gour.three.tgz:
-    resolution: {integrity: sha512-3WaQYGbXYnlnswgXPNXAlBtgmDEROCUG+QRf4YFJhJiuyqqVdgQIWLgqhsCyWjf/KY+pHCk8CYEv3GrZwpPW3w==, tarball: file:projects/gour.three.tgz}
-    name: '@rush-temp/gour.three'
+  file:projects/gour.tgz:
+    resolution: {integrity: sha512-VTTTe3pWruN89+iSP8WppMTKP4kTPzgTkl+kHdywoIpTS9mTc6nqotNB0AFBhApH3PfChD5MRjRA0mBCxAddlg==, tarball: file:projects/gour.tgz}
+    name: '@rush-temp/gour'
     version: 0.0.0
     dependencies:
       '@babel/plugin-transform-private-property-in-object': 7.23.4
@@ -10979,38 +10975,4 @@ packages:
       three: 0.158.0
       three-bvh-csg: 0.0.13_d9f73d427aefdcc2211d1beaee36372d
       three-mesh-bvh: 0.6.8_three@0.158.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - '@babel/plugin-syntax-flow'
-      - '@babel/plugin-transform-react-jsx'
-      - '@parcel/css'
-      - '@swc/core'
-      - '@types/babel__core'
-      - '@types/express'
-      - '@types/react'
-      - '@types/webpack'
-      - bufferutil
-      - canvas
-      - clean-css
-      - csso
-      - debug
-      - esbuild
-      - fibers
-      - node-notifier
-      - node-sass
-      - rework
-      - rework-visit
-      - sass
-      - sass-embedded
-      - sockjs-client
-      - supports-color
-      - ts-node
-      - type-fest
-      - typescript
-      - uglify-js
-      - utf-8-validate
-      - vue-template-compiler
-      - webpack-cli
-      - webpack-hot-middleware
-      - webpack-plugin-serve
     dev: false

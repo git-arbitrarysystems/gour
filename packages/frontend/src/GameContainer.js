@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import { useRef, useEffect, useState } from "react"
-import Main from "./game/Main";
+import {Main} from "gour";
 import { UI } from "./UI";
 
 const GameContainer = props => {

@@ -1,0 +1,24 @@
+{
+  "name": "gour",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "~0.158.0",
+    "@tweenjs/tween.js": "~21.0.0",
+    "three-bvh-csg": "~0.0.13",
+    "three-mesh-bvh": "~0.6.8",
+    "lodash": "~4.17.21",
+    "screenfull": "~6.0.2"
+  },
+  "devDependencies": {
+    "rollup": "~4.6.0",
+    "@rollup/plugin-node-resolve": "~15.2.3",
+    "@rollup/plugin-commonjs": "~25.0.7"
+  }
+}

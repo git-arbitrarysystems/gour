@@ -9,15 +9,14 @@ import { Lights } from './Lights';
 import { debounce, remove } from 'lodash';
 import { ChipStack } from './ChipStack';
 import { Tile } from './Tile';
-import { ActionTypes, LocalAPI } from './LocalAPI';
-import { RemoteAPI } from './RemoteAPI';
+import { ActionTypes, API } from './API';
 
 
 class Main {
 
     /** Hello dolly */
-    constructor(container, apiType = 'local') {
-        this.public({ container, apiType })
+    constructor(container) {
+        this.public({ container })
         this.init()
     }
 
@@ -237,7 +236,7 @@ class Main {
                 break;
             default:
                 console.log('unhandled action', action)
-                
+
                 break;
         }
 
@@ -309,9 +308,7 @@ class Main {
         document.addEventListener('tap', this.onPointerDown);
 
         /** Create and init API*/
-        this.api = this.apiType === 'remote' ?
-            new RemoteAPI(this.onData) :
-            new LocalAPI(this.onData);
+        this.api = new API(this.onData);
         this.api.init();
 
 

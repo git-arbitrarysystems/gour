@@ -5,11 +5,11 @@ export default {
 	input: 'src/components/game/index.js',
 	output: [
 		{
-			dir: 'dist/game',
+			dir: 'dist',
 			format: 'cjs'
 		},
 		{
-			file: 'dist/game/index-es.js',
+			file: 'dist/index-es.js',
 			format: 'es'
 		}],
 	plugins: [nodeResolve(), commonjs()]

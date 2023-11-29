@@ -6,6 +6,6 @@ import { DiceGroup } from "./DiceGroup"
 import { Chip } from "./Chip"
 import { ChipStack } from "./ChipStack"
 import { Lights } from "./Lights"
-import { LocalAPI } from "./LocalAPI"
-import { RemoteAPI } from "./RemoteAPI"
-export {Main, Board, Dice, DiceGroup, Chip, ChipStack, Lights, LocalAPI, RemoteAPI} 
+import { API } from "./API"
+import { AI } from "./AI"
+export {Main, Board, Dice, DiceGroup, Chip, ChipStack, Lights, API, AI} 

@@ -426,8 +426,12 @@
     //     "projectFolder": "packages/api"
     //   },
       {
-        "packageName": "gour.three",
-        "projectFolder": "packages/three"
+        "packageName": "gour",
+        "projectFolder": "packages/game"
+      },
+      {
+        "packageName": "frontend",
+        "projectFolder": "packages/frontend"
       }
   ]
 }

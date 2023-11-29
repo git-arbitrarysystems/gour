@@ -28,7 +28,7 @@ const PlayerTypes = {
 
 
 
-class LocalAPI {
+class API {
     constructor(onDataChange) {
         this.ai = new AI(this, AI.types.SMART)
         this.onDataChange = onDataChange;
@@ -229,7 +229,7 @@ class LocalAPI {
 
     }
     action(type, value) {
-        //console.log('LocalAPI.action', { type, value })
+       
 
         switch (type) {
             case ActionTypes.SELECT_BEST_MOVE:
@@ -280,4 +280,4 @@ class LocalAPI {
 
 }
 
-export { LocalAPI, ActionTypes, TileTypes, PlayerTypes }
+export { API, ActionTypes, TileTypes, PlayerTypes }
