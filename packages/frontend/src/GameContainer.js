@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import { useRef, useEffect, useState } from "react"
-import {Main} from "gour";
+import {GameOfUr} from "gour";
 import { UI } from "./UI";
 
 const GameContainer = props => {
@@ -13,7 +13,7 @@ const GameContainer = props => {
         const container = ref.current;
 
         /** New Game */
-        const game = new Main(container)
+        const game = new GameOfUr(container)
         window.game = game;
         game.start()
 

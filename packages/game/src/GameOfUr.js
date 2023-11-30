@@ -13,7 +13,7 @@ import {  API } from './API';
 import { ActionTypes } from './models';
 
 
-class Main {
+class GameOfUr {
 
     /** Hello dolly */
     constructor(container) {
@@ -411,4 +411,4 @@ class Main {
 
 
 
-export default Main
+export {GameOfUr}

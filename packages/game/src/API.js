@@ -172,6 +172,7 @@ class API {
             options: [],
             agent: this._mode[this._player],
         }
+        
         if (this._board[0][5][2] === 7 || this._board[2][5][2] === 7) {
             /** Game is finished */
         } else if (this._player === null) {
