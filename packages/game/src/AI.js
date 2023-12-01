@@ -1,10 +1,11 @@
-import { TileTypes } from "./models";
+import { AI_Scores, TileTypes, AI_Types } from "./Models";
 
 class AI{
-    constructor(api, type = AI.types.RANDOM ){
+    constructor(api, type = AI_Types.SMART, scores = AI_Scores ){
         
         this.api = api;
         this.type = type;
+        this.scores = scores;
 
     }
 
@@ -28,6 +29,7 @@ class AI{
         if( value === 2 ) return 6/16
         if( value === 1 || value === 3 ) return 4/16
         if( value === 0 || value === 4 ) return 1/16
+        return 0
     }
     getIncentiveToRun(sx, sy){
         const index = this.api.coordinatesToIndex(sx, sy);
@@ -58,7 +60,7 @@ class AI{
 
     getBestOption(options){
 
-        if( this.type === AI.types.RANDOM ){
+        if( this.type === AI_Types.RANDOM ){
             return options[Math.floor(Math.random() * options.length)]
         }
 
@@ -89,7 +91,7 @@ class AI{
             /** Calculate score */
             Object.keys( score.results ).forEach( key => {
                 if( score.results[key] ){
-                    score.values[key] = score.results[key] * AI.scores[key];
+                    score.values[key] = score.results[key] * this.scores[key];
                     score.total += score.values[key]
                 }else{
                     delete score.results[key]
@@ -111,32 +113,6 @@ class AI{
 }
 
 
-AI.types = {
-    RANDOM:"RANDOM",
-    SMART:"SMART"
-}
 
-AI.scores = {
-
-    FROM_DOUBLE:10, /** Leaving a double */
-    TO_DOUBLE:20, /** Arriving at a double */
-    
-    FROM_CENTER:-40, /** Leaving the center double */
-    TO_CENTER:40, /** Arriving at the center double */
-
-    FROM_SAFE:-5, /** Leaving the safe area */
-    TO_SAFE:10, /** Getting to the safe area */
-    
-    HIT:25, /** Taking out an opponent */
-    HIT_LATE:25, /** Taking out an opponent after the center dot */
-    FINISH:3, /** Reaching the destination */
-
-    CURRENT_DANGER:20, /** React to danger currently behind me */
-    FUTURE_DANGER:-10, /** Analyse danger that will be behind me */
-    CHASE:1, /** Look ahead for prey */
-    
-    DISTANCE:(1/16) * 5 /** Bonus for each step in the right direction */
-    
-} 
 
 export {AI}

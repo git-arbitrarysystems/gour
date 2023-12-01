@@ -6,11 +6,13 @@ export default {
 	output: [
 		{
 			dir: 'dist',
-			format: 'cjs'
+			format: 'cjs',
+			
 		},
 		{
 			file: 'dist/index-es.js',
 			format: 'es'
 		}],
+		
 	plugins: [commonjs(), nodeResolve()]
 };

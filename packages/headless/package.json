@@ -2,15 +2,14 @@
   "name": "headless",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "src/HeadlessRunner.js",
   "scripts": {
     "start": "nodemon ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gour": "~1.0.0",
-    "node-localstorage": "~3.0.5"
+    "gour": "~1.0.0"
   },
   "devDependencies": {
     "nodemon": "~3.0.1"

@@ -1,7 +1,8 @@
 import {  isEqual } from "lodash";
 import { AI } from "./AI";
 import * as TWEEN from '@tweenjs/tween.js'
-import { ActionTypes, TileTypes, PlayerTypes } from "./models";
+import { ActionTypes, TileTypes, PlayerTypes, AI_Types, AI_Scores } from "./Models";
+
 
 
 
@@ -9,8 +10,14 @@ import { ActionTypes, TileTypes, PlayerTypes } from "./models";
 
 
 class API {
-    constructor(onDataChange) {
-        this.ai = new AI(this, AI.types.SMART)
+    constructor(onDataChange, ais) {
+
+        /** Define the AI to use for each player */
+        this.ais = ais || [
+            new AI(this, AI_Types.SMART, AI_Scores), 
+            new AI(this, AI_Types.SMART, AI_Scores)
+        ]
+
         this.onDataChange = onDataChange;
     }
 
@@ -165,14 +172,12 @@ class API {
 
     getNextAction() {
 
-     
-        
         const action = {
             type: ActionTypes.UNKNOWN_ACTION,
             options: [],
             agent: this._mode[this._player],
         }
-        
+
         if (this._board[0][5][2] === 7 || this._board[2][5][2] === 7) {
             /** Game is finished */
         } else if (this._player === null) {
@@ -203,18 +208,13 @@ class API {
         Object.keys(defaults).forEach(key => {
             if( key !== 'mode' ) localStorage.removeItem(key)
         })
-
-
         this.load()
         this.update();
-
     }
     action(type, value) {
-       
-
         switch (type) {
             case ActionTypes.SELECT_BEST_MOVE:
-                return this.ai.getBestOption(value)
+                return this.ais[this._player].getBestOption(value)
             case ActionTypes.SELECT_PLAYER:
                 this._player = typeof value === 'number' ?
                     value : Math.round(Math.random())

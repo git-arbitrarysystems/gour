@@ -10,7 +10,7 @@ import { debounce, remove } from 'lodash';
 import { ChipStack } from './ChipStack';
 import { Tile } from './Tile';
 import {  API } from './API';
-import { ActionTypes } from './models';
+import { ActionTypes } from './Models';
 
 
 class GameOfUr {
