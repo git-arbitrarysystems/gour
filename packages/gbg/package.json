@@ -1,0 +1,21 @@
+{
+  "name": "gbg",
+  "version": "1.0.0",
+  "description": "Generic boardgame",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch --verbose"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "~29.7.0",
+    "@babel/core": "~7.23.5",
+    "@babel/preset-env": "~7.23.5",
+    "babel-jest": "~29.7.0",
+    "typescript": "~5.3.2",
+    "ts-jest": "~29.1.1",
+    "@types/jest": "~29.5.10"
+  }
+}

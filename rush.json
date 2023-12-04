@@ -436,6 +436,10 @@
       {
         "packageName": "headless",
         "projectFolder": "packages/headless"
+      },
+      {
+        "packageName": "gbg",
+        "projectFolder": "packages/gbg"
       }
   ]
 }
