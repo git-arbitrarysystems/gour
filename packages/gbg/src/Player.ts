@@ -1,8 +1,8 @@
 import { Pawn } from "./Pawn";
 
 enum PlayerTypes{
-    HUMAN,
-    COMPUTER
+    HUMAN = "HUMAN",
+    COMPUTER = "COMPUTER"
 }
 
 class Player{

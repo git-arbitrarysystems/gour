@@ -1,8 +1,8 @@
 
 enum DiceType{
-    COIN,
-    FOUR_SIDED,
-    SIX_SIDED
+    COIN = "COIN",
+    FOUR_SIDED = "FOUR_SIDED",
+    SIX_SIDED = "SIX_SIDED"
 }
 
 class Dice {
