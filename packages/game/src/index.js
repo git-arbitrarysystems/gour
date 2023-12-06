@@ -7,6 +7,12 @@ import { Chip } from "./Chip"
 import { ChipStack } from "./ChipStack"
 import { Lights } from "./Lights"
 import { API } from "./API"
-import { AI } from "./AI"
-import {TileTypes, ActionTypes, PlayerTypes, AI_Types, AI_Scores} from './Models'
-export {GameOfUr, Board, Dice, DiceGroup, Chip, ChipStack, Lights, API, AI, TileTypes, ActionTypes, PlayerTypes, AI_Types, AI_Scores} 
+import { 
+    AI as AIv0_0, 
+    DefaultScores as AIv0_0_DefaultScores } from "./ai/versions/0.0/AI"
+import {TileTypes, ActionTypes, PlayerTypes, AI_Types} from './Models'
+export {
+    GameOfUr, Board, Dice, DiceGroup, Chip, ChipStack, Lights, API,
+    TileTypes, ActionTypes, PlayerTypes, AI_Types,
+    AIv0_0, AIv0_0_DefaultScores
+} 

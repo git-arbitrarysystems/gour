@@ -9,7 +9,7 @@ localStorage = {
 }
 
 
-const { API, PlayerTypes, AI, AI_Types, AI_Scores } = require('gour/dist');
+const { API, PlayerTypes, AIv0_0, AI_Types, AIv0_0_DefaultScores } = require('gour/dist');
 const { resolve } = require('path');
 
 
@@ -95,13 +95,15 @@ function RunGame(ais) {
 
 /** RunMultipleGames n */
 function RunMultipleGames(n = 2, ais ) {
+    const games = n;
+    const time = Date.now()
     return new Promise((resolve, reject) => {
         const wins = [0, 0]
         const Run = (n) => {
             if( n > 0 ){
                 RunGame(ais).then(({winner}) => wins[winner]++).then( () => Run(n-1) )
             }else{
-                resolve({wins, ais})
+                resolve({games, wins, ais, time:`${Date.now()-time}ms`})
             }
         }
         Run(n)
@@ -109,15 +111,16 @@ function RunMultipleGames(n = 2, ais ) {
 }
 
 /** Get / Set Best and default scoring table */
-const DefaultScores = {...AI_Scores};
-let BestScores = {...DefaultScores}
-const BestScoresPath = `${__dirname}/BestScore.json`;
-if( fs.existsSync(BestScoresPath) ){
-    BestScores = JSON.parse(fs.readFileSync( BestScoresPath, 'utf-8')); 
-}
+const DefaultScores = {...AIv0_0_DefaultScores};
 
+function RunBatches(n = 1, BestScores = DefaultScores){
 
-function RunBatches(n = 1){
+    if( typeof BestScores === 'string'){
+        const BestScoresPath = `${__dirname}/${BestScores}`;
+        if( fs.existsSync(BestScoresPath) ){
+            BestScores = JSON.parse(fs.readFileSync( BestScoresPath, 'utf-8')); 
+        }
+    }
 
     return new Promise( (resolve, reject ) => {
         
@@ -130,11 +133,11 @@ function RunBatches(n = 1){
             }, {})
         
             const ais = [
-                new AI(undefined,AI_Types.SMART, BestScores),
-                new AI(undefined,AI_Types.SMART, AdaptedScores)
+                new AIv0_0(undefined,AI_Types.SMART, BestScores),
+                new AIv0_0(undefined,AI_Types.SMART, AdaptedScores)
             ]
 
-            RunMultipleGames(100, ais ).then(data => {
+            RunMultipleGames(1000, ais ).then(data => {
             
                 const {wins, ais} = data;
                 const winner = wins[0] >= wins[1] ? 0 : 1;
@@ -163,19 +166,41 @@ function RunBatches(n = 1){
 
 }
 
-function TestScores(Scores = [DefaultScores, DefaultScores]){
+
+
+function TestScores(Scores = [DefaultScores, BestScores]){
+
+    if( typeof Scores[0] === 'string'){
+        let path = `${__dirname}/${Scores[0]}`
+        if( fs.existsSync(path) ){
+            Scores[0] = JSON.parse(fs.readFileSync( path, 'utf-8')); 
+        }
+    }
+
+    if( typeof Scores[1] === 'string'){
+        
+        let path = `${__dirname}/${Scores[1]}`
+        if( fs.existsSync(path) ){
+            Scores[1] = JSON.parse(fs.readFileSync( path, 'utf-8')); 
+        }
+    }
+
     return new Promise( (resolve, reject) => {
         RunMultipleGames(1000, [
-            new AI(undefined, AI_Types.SMART, Scores[0]),
-            new AI(undefined, AI_Types.SMART,  Scores[1])
+            new AIv0_0(undefined, AI_Types.SMART, Scores[0]),
+            new AIv0_0(undefined, AI_Types.SMART,  Scores[1])
         ]).then(data => {
             console.log(data)})
     })
 }
 
+//
+//RunBatches(10, 'BestScores.1.json')
 
-//RunBatches(100)
-TestScores([DefaultScores, DefaultScores])
+// TestScores([DefaultScores, 'BestScores.0.json'])
+// TestScores([DefaultScores, 'BestScores.1.json'])
+// TestScores([DefaultScores, 'BestScores.2.json'])
+TestScores(['BestScores.1.json', 'BestScores.2.json'])
         
 
 

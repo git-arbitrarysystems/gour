@@ -1,7 +1,7 @@
 import {  isEqual } from "lodash";
-import { AI } from "./AI";
+import { AI, DefaultScores } from "./ai/versions/0.0/AI";
 import * as TWEEN from '@tweenjs/tween.js'
-import { ActionTypes, TileTypes, PlayerTypes, AI_Types, AI_Scores } from "./Models";
+import { ActionTypes, TileTypes, PlayerTypes, AI_Types } from "./Models";
 
 
 
@@ -14,8 +14,8 @@ class API {
 
         /** Define the AI to use for each player */
         this.ais = ais || [
-            new AI(this, AI_Types.SMART, AI_Scores), 
-            new AI(this, AI_Types.SMART, AI_Scores)
+            new AI(this, AI_Types.SMART, DefaultScores), 
+            new AI(this, AI_Types.SMART, DefaultScores)
         ]
 
         this.onDataChange = onDataChange;

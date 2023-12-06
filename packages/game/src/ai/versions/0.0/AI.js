@@ -1,7 +1,32 @@
-import { AI_Scores, TileTypes, AI_Types } from "./Models";
+
+import { TileTypes, AI_Types } from "../../../Models";
+
+const DefaultScores = {
+
+    FROM_DOUBLE:10, /** Leaving a double */
+    TO_DOUBLE:20, /** Arriving at a double */
+    
+    FROM_CENTER:-40, /** Leaving the center double */
+    TO_CENTER:40, /** Arriving at the center double */
+
+    FROM_SAFE:-5, /** Leaving the safe area */
+    TO_SAFE:10, /** Getting to the safe area */
+    
+    HIT:25, /** Taking out an opponent */
+    HIT_LATE:25, /** Taking out an opponent after the center dot */
+    FINISH:3, /** Reaching the destination */
+
+    CURRENT_DANGER:20, /** React to danger currently behind me */
+    FUTURE_DANGER:-10, /** Analyse danger that will be behind me */
+    //CHASE:1, /** Look ahead for prey */
+    
+    DISTANCE:(1/16) * 5 /** Bonus for each step in the right direction */
+    
+} 
+
 
 class AI{
-    constructor(api, type = AI_Types.SMART, scores = AI_Scores ){
+    constructor(api, type = AI_Types.SMART, scores = DefaultScores ){
         
         this.api = api;
         this.type = type;
@@ -115,4 +140,4 @@ class AI{
 
 
 
-export {AI}
+export {AI, DefaultScores}
