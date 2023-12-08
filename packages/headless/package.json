@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/HeadlessRunner.js",
   "scripts": {
-    "start": "nodemon ."
+    "start": "nodemon -e js ."
   },
   "author": "",
   "license": "ISC",

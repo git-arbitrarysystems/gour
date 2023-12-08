@@ -15,6 +15,7 @@ specifiers:
   '@rush-temp/gour': file:./projects/gour.tgz
   '@rush-temp/headless': file:./projects/headless.tgz
   '@tweenjs/tween.js': ~21.0.0
+  '@types/jest': ~29.5.10
   babel-jest: ~29.7.0
   jest: ~29.7.0
   lodash: ~4.17.21
@@ -45,6 +46,7 @@ dependencies:
   '@rush-temp/gour': file:projects/gour.tgz
   '@rush-temp/headless': file:projects/headless.tgz
   '@tweenjs/tween.js': 21.0.0
+  '@types/jest': 29.5.10
   babel-jest: 29.7.0_@babel+core@7.23.5
   jest: 29.7.0
   lodash: 4.17.21
@@ -14728,11 +14730,12 @@ packages:
     dev: false
 
   file:projects/headless.tgz:
-    resolution: {integrity: sha512-80z2vKQ51NnYSno8rAIxRv7QSeelHpXGbnaS7+0qaPQEaq/abaQT1cY+Hwo57qqrVugxtC893sdo2GFeAAOHaA==, tarball: file:projects/headless.tgz}
+    resolution: {integrity: sha512-+cxCFlkUDHWqAdw+cix8omQLne2qATxGqk2L5QvzBk/oecJgMWAaPN+xRLO/YydalM4istOJBEwrtwT04mItEQ==, tarball: file:projects/headless.tgz}
     name: '@rush-temp/headless'
     version: 0.0.0
     dependencies:
       forever: 4.0.3
+      lodash: 4.17.21
       node-localstorage: 3.0.5
       nodemon: 3.0.1
     dev: false

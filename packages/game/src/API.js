@@ -1,4 +1,4 @@
-import {  isEqual } from "lodash";
+import   isEqual  from "lodash/isEqual";
 import { AI, DefaultScores } from "./ai/versions/0.0/AI";
 import * as TWEEN from '@tweenjs/tween.js'
 import { ActionTypes, TileTypes, PlayerTypes, AI_Types } from "./Models";

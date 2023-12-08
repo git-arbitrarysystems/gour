@@ -24,6 +24,23 @@ const DefaultScores = {
     
 } 
 
+// const DefaultScores = {
+    
+//         FROM_DOUBLE: 0,
+//         TO_DOUBLE: 0,
+//         FROM_CENTER: 0,
+//         TO_CENTER: 0,
+//         FROM_SAFE: 0,
+//         TO_SAFE: 0,
+//         HIT: 0,
+//         HIT_LATE: 0,
+//         FINISH: 0,
+//         CURRENT_DANGER: 0,
+//         FUTURE_DANGER: 0,
+//         DISTANCE: 0
+     
+// }
+
 
 class AI{
     constructor(api, type = AI_Types.SMART, scores = DefaultScores ){
@@ -89,6 +106,7 @@ class AI{
             return options[Math.floor(Math.random() * options.length)]
         }
 
+        let max = Number.NEGATIVE_INFINITY
         const scoredOptions = options.map( option => {
             let score = {total:0, values:{}, results:{}};
             const [[sx,sy], [tx, ty]] = option;
@@ -122,15 +140,17 @@ class AI{
                     delete score.results[key]
                 }
             })
-          
+            
+            max = Math.max(score.total, max)
+            
 
 
             return {option, score}
-        }).sort((a,b) => b.score.total - a.score.total);
+        }).filter( n => n.score.total === max).sort((a,b) => b.score.total - a.score.total);
 
         //console.log( scoredOptions, JSON.stringify(scoredOptions[0], null, 2))
 
-        return scoredOptions[0].option
+        return scoredOptions[ Math.floor(Math.random() * scoredOptions.length) ].option
     }
 
 

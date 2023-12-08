@@ -1,0 +1,14 @@
+{
+    "FROM_DOUBLE": 0,
+    "TO_DOUBLE": 9,
+    "FROM_CENTER": -6,
+    "TO_CENTER": 4,
+    "FROM_SAFE": -5,
+    "TO_SAFE": 6,
+    "HIT": 17,
+    "HIT_LATE": 4,
+    "FINISH": 5,
+    "CURRENT_DANGER": -4,
+    "FUTURE_DANGER": -4,
+    "DISTANCE": 0
+}
