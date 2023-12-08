@@ -14,7 +14,7 @@ class Dice {
     public value:number | undefined
     
 
-    constructor(type:DiceType = DiceType.COIN) {
+    constructor(type:DiceType = DiceType.SIX_SIDED) {
         this.type = type;
 
         /** Store min/max */

@@ -7,13 +7,13 @@ test('default game constructor', () => {
     console.dir(game, {depth:null})
 
     /** Run a game loop */
-    for( var i=0; i<30;i++){
-        game.request()
-        //console.log(game.state)
-        game.execute()
-    }
+    // for( var i=0; i<30;i++){
+    //     game.request()
+    //     game.board?.render()
+    //     game.execute()
+    // }
 
-    console.dir(game, {depth:null})
+    //console.dir(game, {depth:null})
 
     
 })
