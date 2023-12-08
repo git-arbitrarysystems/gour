@@ -5,6 +5,7 @@
       "strict": true,
       "esModuleInterop": true,
       "lib": ["es2015", "dom"], 
+      "outDir": "./dist"
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]
