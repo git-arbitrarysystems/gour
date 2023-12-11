@@ -6,22 +6,19 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch --verbose",
-    "start": "webpack serve --open",
-    "build": "webpack"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "jest": "~29.7.0",
-    "@babel/core": "~7.23.5",
-    "@babel/preset-env": "~7.23.5",
-    "babel-jest": "~29.7.0",
     "typescript": "~5.3.2",
     "ts-jest": "~29.1.1",
-    "@types/jest": "~29.5.10",
-    "ts-node": "~10.9.1",
-    "webpack": "~5.89.0",
-    "webpack-cli": "~5.1.4",
-    "ts-loader": "~9.5.1"
+    "@types/jest": "~29.5.10"
+   },
+  "dependencies": {
+    "vite": "~5.0.7"
   }
 }

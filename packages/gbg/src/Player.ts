@@ -12,7 +12,7 @@ class Player{
 
     constructor(index:number, pawns:number = 0){
         this.index = index;
-        this.pawns = [...Array(pawns)].map( (n,index) => {
+        this.pawns = [...Array(pawns)].map( (_,index) => {
             return new Pawn(index)
         })
     }

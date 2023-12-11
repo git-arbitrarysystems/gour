@@ -73,13 +73,13 @@ class Game {
         const { tiles, players, pawns, dice } = data;
 
         /** Setup players & pawns */
-        this.players = [...Array(players)].map((n, index) => {
+        this.players = [...Array(players)].map(( _, index) => {
             return new Player(index, pawns)
         })
 
         /** Setup the board */
         this.board = new Board(
-            [...Array(tiles)].map((n, index) => {
+            [...Array(tiles)].map((_, index) => {
                 const prev = index > 0 ? [index - 1] : []
                 const next = index < tiles - 1 ? [index + 1] : []
                 return new Tile(index, prev, next)
@@ -90,7 +90,7 @@ class Game {
 
 
         /** Setup dice */
-        this.dice = [...Array(dice)].map((n, index) => {
+        this.dice = [...Array(dice)].map(() => {
             return new Dice()
         })
 
@@ -307,4 +307,4 @@ class Game {
 
 }
 
-export { Game, GameType, GameState }
+export { Game, type GameType, type GameState }
