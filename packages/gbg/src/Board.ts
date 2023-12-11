@@ -1,6 +1,13 @@
 import { Player } from "./Player";
 import { Tile } from "./Tile";
 
+enum Layout{
+  RECTANGLE = "RECTANGLE",
+  CIRCLE = "CIRCLE",
+  SQUARE = "SQUARE",
+  OVAL = "OVAL"
+}
+
 class Board {
 
   public tiles: Tile[] = []
@@ -33,7 +40,7 @@ class Board {
   }
 
 
-  render() {
+  log() {
     return this.tiles.map(tile => {
         const pawns = this.players.map(({ pawns }) => {
           return pawns.reduce((prev, pawn) => {

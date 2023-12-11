@@ -2,14 +2,7 @@ import { Board } from "./Board"
 import { Dice } from "./Dice";
 import { Player } from "./Player";
 import { Tile } from "./Tile";
-import { getGameByType } from "./games";
-
-type GameType = {
-    players: number,
-    tiles: number,
-    dice: number,
-    pawns: number
-}
+import { getGameByType, GameType } from "./games";
 
 enum Actions {
     SELECT_PLAYER = "SELECT_PLAYER",
@@ -70,7 +63,7 @@ class Game {
     init(data: GameType) {
 
         /** Initialisation */
-        const { tiles, players, pawns, dice } = data;
+        const { tiles, players, pawns, dice:{num:diceNum, type:diceType} } = data;
 
         /** Setup players & pawns */
         this.players = [...Array(players)].map(( _, index) => {
@@ -90,8 +83,8 @@ class Game {
 
 
         /** Setup dice */
-        this.dice = [...Array(dice)].map(() => {
-            return new Dice()
+        this.dice = [...Array(diceNum)].map(() => {
+            return new Dice(diceType)
         })
 
     }
@@ -307,4 +300,4 @@ class Game {
 
 }
 
-export { Game, type GameType, type GameState }
+export { Game, type GameState }

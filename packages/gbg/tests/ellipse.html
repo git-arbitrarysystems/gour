@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draw Lines on Ellipse</title>
+  <style>
+    #svg-container {
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <svg id="svg-container" width="300" height="200"></svg>
+
+  <script>
+    function calculateEllipsePoint(width, height, angle) {
+      const x = width / 2 * Math.cos(angle);
+      const y = height / 2 * Math.sin(angle);
+      return { x, y };
+    }
+
+    function generateEllipseCoordinates(width, height, step) {
+      const coordinates = [];
+      for (let angle = 0; angle <= 2; angle += step) {
+        const { x, y } = calculateEllipsePoint(width, height, angle);
+        coordinates.push({ x, y });
+      }
+      return coordinates;
+    }
+
+    function drawLinesOnEllipse(svg, coordinates, distance, color) {
+      const linesGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      svg.appendChild(linesGroup);
+
+      for (let i = 0; i < coordinates.length; i++) {
+        const startPoint = coordinates[i];
+
+        for (let j = i + 1; j < coordinates.length; j++) {
+          const endPoint = coordinates[j];
+          const lineLength = Math.sqrt((endPoint.x - startPoint.x)**2 + (endPoint.y - startPoint.y)**2);
+
+          if (lineLength >= distance) {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", startPoint.x);
+            line.setAttribute("y1", startPoint.y);
+            line.setAttribute("x2", endPoint.x);
+            line.setAttribute("y2", endPoint.y);
+            line.setAttribute("stroke", color);
+            linesGroup.appendChild(line);
+            break;
+          }
+        }
+      }
+    }
+
+    // Wait for the DOM to fully load
+    document.addEventListener("DOMContentLoaded", function() {
+      const svgContainer = document.getElementById("svg-container");
+      const ellipseWidth = 150;
+      const ellipseHeight = 100;
+      const step = 0.005;
+      const distanceBetweenLines = 50;
+      const numberOfLines = 1;
+
+      const ellipseCoordinates = generateEllipseCoordinates(ellipseWidth, ellipseHeight, step);
+
+      drawLinesOnEllipse(svgContainer, ellipseCoordinates, distanceBetweenLines, "blue");
+    });
+  </script>
+</body>
+</html>

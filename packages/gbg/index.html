@@ -6,10 +6,51 @@
     <title></title>
   </head>
   <body>
+    <div id="field"></div>
     <script type="module">
         import {Game} from './src/index.ts';
+        import {forceDirectedLayout} from './src/Layout.ts'
+
+        const field = document.getElementById('field')
+        field.style.width = '800px'
+        field.style.height = '500px'
+        field.style.background = '#00ff00'
+        field.style.position = 'relative'
+
         const g = new Game()
-        console.log(g.board.render())
+        console.log(forceDirectedLayout, g.board.log())
+
+        const {directionalTiles, step } = forceDirectedLayout(g.board.tiles )
+
+        directionalTiles.forEach( (node, index) => {
+            const n = document.createElement('div')
+            n.innerHTML = index;
+            n.style.position = 'absolute'
+            n.style.transform = 'translate(-50%, -50%)'
+            n.style.left = ((node.x * 100) ) + '%'
+            n.style.top =( (node.y * 100)  )+ '%'
+
+            field.appendChild(n)
+        })
+
+        console.log({directionalTiles, step})
+
+        let stepsLeft = 800
+        const i = setInterval( () => {
+            stepsLeft--
+            step()
+            directionalTiles.forEach( (directionalTile, index) => {
+                const n = field.childNodes[index]
+                n.style.left = ((directionalTile.x * 100) ) + '%'
+                n.style.top =( (directionalTile.y * 100)  )+ '%'
+            })
+            if( stepsLeft <= 0 ) clearInterval(i)
+            console.log(stepsLeft)
+        }, 0)
+
+        
+
     </script>
+    
   </body>
 </html>

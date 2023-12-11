@@ -4,14 +4,14 @@ import {Game} from './src/Game'
 const game = new Game()
 
 /** Run limits */
-let steps = 100, step = 0, delay = 100;
+let steps = 500, step = 0, delay = 10;
 
 const Step = () => {
     return new Promise( () => {
 
         /** */
         console.clear()
-        console.log(step)
+        console.log(`${step}/${steps}`)
         
         /** Get next step in the game */
         game.request()
@@ -27,7 +27,7 @@ const Step = () => {
             
             /** Output */
             console.log(`Player ${game.state.player} ${type} ${ dice === undefined ? '' : dice}`)
-            console.log('Board:\n' + game.board?.render() )
+            console.log('Board:\n' + game.board?.log() )
 
             /** Negotiate winner */
             const winner = game.winner;

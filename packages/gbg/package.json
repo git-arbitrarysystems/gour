@@ -9,7 +9,7 @@
     "test:watch": "jest --watch --verbose",
     "dev": "vite",
     "build": "tsc && vite build",
-    "runner": "nodemon --watch ./**/*.ts --exec \"tsx ./runner.ts\""
+    "runner": "nodemon -e ts,js --exec \"tsx ./runner.ts\""
   },
   "author": "",
   "license": "ISC",
