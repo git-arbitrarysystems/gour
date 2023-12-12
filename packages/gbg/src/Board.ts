@@ -1,12 +1,7 @@
 import { Player } from "./Player";
 import { Tile } from "./Tile";
 
-enum Layout{
-  RECTANGLE = "RECTANGLE",
-  CIRCLE = "CIRCLE",
-  SQUARE = "SQUARE",
-  OVAL = "OVAL"
-}
+
 
 class Board {
 
