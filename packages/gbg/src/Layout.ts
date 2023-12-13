@@ -1,131 +1,119 @@
-import { Tile } from "."
+import { Tile } from "./Tile"
 
-type DirectionalNode = {
-    x: number
-    y: number
-    vx: number
-    vy: number,
-    tile: Tile
-}
+
 
 enum Layout {
     RECTANGLE = "RECTANGLE",
-    CIRCLE = "CIRCLE",
-    SQUARE = "SQUARE",
-    OVAL = "OVAL"
+    MAP = "MAP",
+    // CIRCLE = "CIRCLE",
+    // SQUARE = "SQUARE",
+    // OVAL = "OVAL"
 }
 
-const getLayout = (type: Layout, tileCount: number, w:number = 1, h:number = 1) => {
-    
-    // Tiles per side
-    
-    // tilesOnX * 2 + tilesOnY * 2 - 4 = count
-    // tileOnX = ( count + 4 - tilesOnY * 2 ) / 2
-    // tilesOnY = ( count + 4 - tilesOnX * 2 ) / 2
-    // tilesOnX = (w/h) * tilesOnY
-    // tilesOnY = (h/w) * tilesOnX
-
-    // tilesOnX * 2 + (w/h) * tilesOnX * 2 = count + 4
-    // ( 2+2*(w/h) ) * tilesOnX = count + 4
-    const tilesOnX = (tileCount + 4) / (2 + 2 * (w/h))
-    const tilesOnY = (tileCount + 4) / (2 + 2 * (h/w))
-
-
-   
-    const xAxisTileCount =  Math.ceil(tilesOnX)
-    const yAxisTileCount =  Math.ceil(tilesOnY)
-    const space = xAxisTileCount * 2 + yAxisTileCount * 2 - 4
-    console.log(
-        type,tileCount, w, h, '\n', 
-        {tilesOnX, tilesOnY},
-        {xAxisTileCount, yAxisTileCount},
-        {space}
-    )
-
-    return [...Array(tileCount)]
+type TilePosition = {
+    x: number,
+    y: number,
+    xSize: number,
+    ySize: number
 }
 
+const getLayout = (type: Layout, tiles: Tile[], ratio: number): TilePosition[] => {
 
-const forceDirectedLayout = (tiles: Tile[]) => {
-    const directionalTiles: DirectionalNode[] = tiles.map((tile) => ({
-        x: Math.random(),
-        y: Math.random(),
-        vx: 0,
-        vy: 0,
-        tile
-    }))
-
-    const step = () => {
-
-        const gravitationalStrength = 0.1;
-        const attractionStrength = 0.05;
-        const repulsionStrength = 0.002
-        const friction = 0.5
-
-        /** Update speed */
-        directionalTiles.forEach(directionalTile => {
-
-            const { x, y, tile: { next } } = directionalTile
-
-            let dx, dy, d
-
-            /** Gravity */
-            dx = (0.5 - x)
-            dy = (0.5 - y)
-            d = Math.sqrt(dx * dx + dy * dy);
-            directionalTile.vx += dx * d * gravitationalStrength
-            directionalTile.vy += dy * d * gravitationalStrength
-
-
-            /** Repulsion */
-            directionalTiles.forEach((otherTile) => {
-                const { x: tx, y: ty } = otherTile
-                dx = tx - x;
-                dy = ty - y;
-                d = Math.sqrt(dx * dx + dy * dy);
-                if (d !== 0) {
-                    directionalTile.vx -= dx / d * repulsionStrength
-                    directionalTile.vy -= dy / d * repulsionStrength
-                }
-
-            })
-
-            /** Attraction */
-            next.forEach((index) => {
-                const { x: tx, y: ty } = directionalTiles[index]
-                dx = tx - x;
-                dy = ty - y;
-                d = Math.sqrt(dx * dx + dy * dy);
-                if (d != 0) {
-
-                    directionalTile.vx += dx * d * attractionStrength
-                    directionalTile.vy += dy * d * attractionStrength
-                }
-
-            })
-
-
-
-
-
-        })
-
-        directionalTiles.forEach(directionalTile => {
-            directionalTile.x += directionalTile.vx;
-            directionalTile.y += directionalTile.vy
-
-            directionalTile.vx *= friction
-            directionalTile.vy *= friction
-        })
-
-
-
+    if (type === Layout.RECTANGLE) {
+        return getRectangularLayout(tiles.length, ratio)
+    } else {
+        throw new Error(`Invalid layout type: ${type}`)
     }
 
 
-    return { directionalTiles, step }
 
+    return []
+}
+
+const getLayoutFromMap = (map: number[][] | string): TilePosition[] => {
+    
+     /** String map to array */
+    if( typeof map === 'string' ){
+        map = map.replace(/ /gi, '').split('\n')
+        .filter(line => line.length > 0)
+        .map( line => 
+            line
+                .split('')
+                .map( n => Number(n))
+        )
+    }
+    
+    const w: number = map.length,
+        h: number = map[0].length;
+    const xSize: number = 1 / w,
+        ySize: number = 1 / h
+
+
+    const result: TilePosition[] = [];
+    [...Array(w * h)].forEach((_, index) => {
+        const x = index % w,
+            y = Math.floor(index / w)
+        if (map[y][x]) {
+            result.push({ x: x / w, y: y / h, xSize, ySize })
+        }
+    })
+
+    return result
+}
+
+/** Get best rectangular layout for tiles on edge */
+const getRectangularLayout = (tileCount: number, ratio: number = 1): TilePosition[] => {
+
+    /* Ratio to width,height, max = 1; */
+    const w = 1,
+        h = 1 / ratio;
+
+    const tilesOnXAxis = Math.ceil((tileCount + 4) / (2 + 2 * (h / w)))
+    const tilesOnYAxis = Math.ceil((tileCount + 4) / (2 + 2 * (w / h)))
+    const xSize = 1 / tilesOnXAxis;
+    const ySize = 1 / tilesOnYAxis
+
+    /** Maximum space for tiles */
+    const space = tilesOnXAxis * 2 + tilesOnYAxis * 2 - 4
+
+    /** Create positions for each tile in space */
+    let xDir = 1,
+        yDir = 0,
+        x = 0,
+        y = 0;
+    return [...Array(space)].map((_, i) => {
+
+        /** Current pointer */
+        const position: TilePosition = { x, y, xSize, ySize }
+
+        /** fix rounding issues */
+        const delta = 0.001
+
+        /** Rotate right 90deg */
+        if (xDir === 1 && x + xSize >= 1 - delta) {
+            xDir = 0;
+            yDir = 1;
+        } else if (yDir === 1 && y + ySize >= 1 - delta) {
+            xDir = -1;
+            yDir = 0
+        } else if (xDir === -1 && x - xSize < 0) {
+            xDir = 0;
+            yDir = -1
+        } else if (yDir === -1 && y - ySize < 0) {
+            xDir = 1
+            yDir = 0
+        }
+
+
+        x += xDir * xSize;
+        y += yDir * ySize;
+
+        return position
+    })
 
 }
 
-export { forceDirectedLayout, getLayout, Layout }
+
+
+
+export { getLayout, getRectangularLayout, getLayoutFromMap, Layout }
