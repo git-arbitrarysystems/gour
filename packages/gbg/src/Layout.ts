@@ -39,7 +39,7 @@ const getLayoutFromMap = (map: number[][] | string): TilePosition[] => {
         .map( line => 
             line
                 .split('')
-                .map( n => Number(n))
+                .map( n => String(`.0`).includes(n) ? 0 : 1 )
         )
     }
     
@@ -52,7 +52,7 @@ const getLayoutFromMap = (map: number[][] | string): TilePosition[] => {
     const result: TilePosition[] = [];
     [...Array(w * h)].forEach((_, index) => {
         const x = index % w,
-            y = Math.floor(index / w)
+            y = Math.floor(index / h)
         if (map[y][x]) {
             result.push({ x: x / w, y: y / h, xSize, ySize })
         }
@@ -66,7 +66,7 @@ const getRectangularLayout = (tileCount: number, ratio: number = 1): TilePositio
 
     /* Ratio to width,height, max = 1; */
     const w = 1,
-        h = 1 / ratio;
+        h = 1 / ratio; 
 
     const tilesOnXAxis = Math.ceil((tileCount + 4) / (2 + 2 * (h / w)))
     const tilesOnYAxis = Math.ceil((tileCount + 4) / (2 + 2 * (w / h)))
@@ -81,7 +81,7 @@ const getRectangularLayout = (tileCount: number, ratio: number = 1): TilePositio
         yDir = 0,
         x = 0,
         y = 0;
-    return [...Array(space)].map((_, i) => {
+    return [...Array(space)].map(() => {
 
         /** Current pointer */
         const position: TilePosition = { x, y, xSize, ySize }

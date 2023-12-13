@@ -4,11 +4,36 @@
 <head>
     <title>Layout.getRectangularLayout</title>
     <script type="module">
-        import { getLayoutFromMap } from './Layout.js'
+        import { getLayoutFromMap } from './lib/Layout.js'
 
 
-        const size = 200
+        const size = 350
         const sets = [
+            [`
+            XX..ooC..YY
+            XX..oyo..YY
+            ....oyo....
+            ....oyo....
+            Booooyooooo
+            oxxxx.zzzzo
+            ooooowooooD
+            ....owo....
+            ....owo....
+            WW..owo..ZZ
+            WW..Aoo..ZZ
+            `, 1],
+            [`
+            1000000000
+            1110011111
+            0011010011
+            1001110110
+            1100000100
+            0101110111
+            0101010001
+            0111011101
+            0000000101
+            0000000111
+            `,1],
             [`
             1100011111
             0110010001
@@ -21,7 +46,6 @@
             0000000101
             0000000111
             `,1],
-
             [[
                 [1, 1, 1, 1, 1],
                 [0, 0, 0, 0, 1],
@@ -84,7 +108,7 @@
                 box.appendChild(tile)
             })
 
-            console.log(tiles)
+            //console.log(tiles)
 
 
         })
