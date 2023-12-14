@@ -63,20 +63,16 @@ class Game {
     init(data: GameType) {
 
         /** Initialisation */
-        const { tiles, players, pawns, dice:{num:diceNum, type:diceType} } = data;
+        const { board:{map}, players:{count, pawns}, dice:{num:diceNum, type:diceType} } = data;
 
         /** Setup players & pawns */
-        this.players = [...Array(players)].map(( _, index) => {
+        this.players = [...Array(count)].map(( _, index) => {
             return new Player(index, pawns)
         })
 
         /** Setup the board */
         this.board = new Board(
-            [...Array(tiles)].map((_, index) => {
-                const prev = index > 0 ? [index - 1] : []
-                const next = index < tiles - 1 ? [index + 1] : []
-                return new Tile(index, prev, next)
-            }),
+            map,
             this.players
         )
 

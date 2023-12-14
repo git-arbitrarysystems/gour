@@ -1,5 +1,6 @@
 import { Player } from "./Player";
 import { Tile } from "./Tile";
+import { MapType } from "./games";
 
 
 
@@ -7,9 +8,27 @@ class Board {
 
   public tiles: Tile[] = []
   public players: Player[] = []
-  constructor(tiles: Tile[], players: Player[]) {
-    this.tiles = tiles;
+  constructor(map: MapType, players: Player[]) {
+    this.tiles = this.mapToTiles(map);
     this.players = players
+  }
+
+
+  mapToTiles(map: MapType): Tile[] {
+
+    let {mapData, types } = map
+
+   
+    mapData = Array.isArray(mapData) ? mapData : mapData.replace(/ /gi, '').split('\n')
+        .filter(line => line.length > 0)
+        .map(line =>
+          line
+            .split('')
+            .map(n => String(`.0`).includes(n) ? 0 : 1)
+        )
+        console.log({ mapData })
+
+    return []
   }
 
 
@@ -37,15 +56,15 @@ class Board {
 
   log() {
     return this.tiles.map(tile => {
-        const pawns = this.players.map(({ pawns }) => {
-          return pawns.reduce((prev, pawn) => {
-            if (pawn.tile === tile.index) return prev + 1;
-            return prev;
-          }, 0)
-        })
-        return `Tile ${tile.index}: Pawns[${pawns.join(', ')}]`;
-      }).join('\n')
-    
+      const pawns = this.players.map(({ pawns }) => {
+        return pawns.reduce((prev, pawn) => {
+          if (pawn.tile === tile.index) return prev + 1;
+          return prev;
+        }, 0)
+      })
+      return `Tile ${tile.index}: Pawns[${pawns.join(', ')}]`;
+    }).join('\n')
+
   }
 
 }
