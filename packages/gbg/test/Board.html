@@ -7,20 +7,36 @@
         import { Board } from './lib/Board.js'
 
         const board = new Board(
-            {mapData:
-            `
-            XX..ooC..YY
-            XX..oyo..YY
-            ....oyo....
-            ....oyo....
-            Booooyooooo
-            oxxxx.zzzzo
-            ooooowooooD
-            ....owo....
-            ....owo....
-            WW..owo..ZZ
-            WW..Aoo..ZZ
-            `}, []
+            {
+                mapData:
+                    `
+            BB..ooY.CC
+            BB..oco..CC
+            ....oco....
+            ....oco....
+            Xoooocooooo
+            obbbb.ddddo
+            oooooaooooZ
+            ....oao....
+            ....oao....
+            AA..oao..DD
+            AA..Woo..DD
+            `,
+                types: {
+                    A: 'STORE_PLAYER_0',
+                    B: 'STORE_PLAYER_1',
+                    C: 'STORE_PLAYER_2',
+                    D: 'STORE_PLAYER_3',
+                    a: 'TARGET_PLAYER_0',
+                    b: 'TARGET_PLAYER_1',
+                    c: 'TARGET_PLAYER_2',
+                    d: 'TARGET_PLAYER_3',
+                    W: 'START_PLAYER_0',
+                    X: 'START_PLAYER_1',
+                    Y: 'START_PLAYER_2',
+                    Z: 'START_PLAYER_3'
+                }
+            }, []
         )
 
         // const size = 350
